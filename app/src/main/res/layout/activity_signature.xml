@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="presenter"
+            type="com.cin.facesign.ui.SignatureActivity.Presenter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:fitsSystemWindows="true">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="48dp"
+            android:layout_width="0dp"
+            android:layout_marginEnd="48dp"
+            android:layout_height="wrap_content"
+            android:text="请在以下灰色区域签名"
+            android:textColor="#ff333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.cin.facesign.widget.LinePathView
+            android:id="@+id/linePathView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#F6F6F6"
+            android:layout_marginTop="5dp"
+            app:layout_constraintBottom_toTopOf="@id/reset"
+            app:layout_constraintEnd_toEndOf="@id/textView1"
+            app:layout_constraintStart_toStartOf="@id/textView1"
+            app:layout_constraintTop_toBottomOf="@id/textView1" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="*请确保您的笔记清晰可见"
+            android:textColor="#ff666666"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="@id/reset"
+            app:layout_constraintStart_toStartOf="@id/textView1"
+            app:layout_constraintTop_toTopOf="@id/reset" />
+
+        <com.noober.background.view.BLTextView
+            android:id="@+id/reset"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="30dp"
+            android:gravity="center"
+            android:text="重置"
+            android:textColor="#ffff7c00"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:bl_corners_radius="2dp"
+            android:onClick="@{()->presenter.reset()}"
+            app:bl_solid_color="#fff"
+            app:bl_stroke_color="#FF7C00"
+            app:bl_stroke_width="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginBottom="48dp"
+            app:layout_constraintEnd_toStartOf="@id/ok"
+            app:layout_constraintTop_toBottomOf="@id/linePathView" />
+
+        <com.noober.background.view.BLTextView
+            android:id="@+id/ok"
+            style="@style/themeButton"
+            android:layout_width="180dp"
+            android:layout_height="50dp"
+            android:gravity="center"
+            app:bl_corners_radius="2dp"
+            android:onClick="@{()->presenter.ok()}"
+            android:text="确认"
+            app:layout_constraintEnd_toEndOf="@id/textView1"
+            app:layout_constraintTop_toTopOf="@id/reset" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

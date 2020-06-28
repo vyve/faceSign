@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="presenter"
+            type="com.cin.facesign.ui.fragment.PersonalFragment.Presenter" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#F6F6F6">
+
+        <ImageView
+            android:id="@+id/backgroundImg"
+            android:layout_width="match_parent"
+            android:layout_height="188dp"
+            android:src="@mipmap/personal_bg"
+            android:scaleType="centerCrop"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+        <com.cin.facesign.widget.TitleBar
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:backgroundColor="#00000000"
+            app:haveBackView="false"
+            app:needStatusView="true"
+            app:statusColor="#00000000"
+            app:rightImage="@mipmap/personal_right_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/headImg"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="20dp"
+            android:src="@mipmap/personal_default_head"
+            app:civ_border_color="#fff"
+            app:civ_border_width="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:text="张双录"
+            android:textColor="#ffffffff"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@id/headImg"
+            app:layout_constraintTop_toTopOf="@id/headImg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="ID56012"
+            android:textColor="#ccffffff"
+            android:textSize="15sp"
+            app:layout_constraintStart_toStartOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@id/name" />
+
+        <com.noober.background.view.BLConstraintLayout
+            android:id="@+id/changeInfo"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
+            android:onClick="@{()->presenter.onChangeInfoClick()}"
+            android:padding="20dp"
+            app:bl_corners_radius="2dp"
+            app:bl_ripple_color="@color/click_ripple_color"
+            app:bl_ripple_enable="true"
+            app:bl_solid_color="#fff"
+            app:layout_constraintEnd_toStartOf="@id/changePhone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/backgroundImg">
+
+            <ImageView
+                android:id="@+id/changeInfo_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/personal_info_change"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/changeInfo_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="个人信息变更"
+                android:textColor="#ff000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/changeInfo_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="点击编辑"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/changeInfo_text1"
+                app:layout_constraintTop_toBottomOf="@id/changeInfo_text1" />
+        </com.noober.background.view.BLConstraintLayout>
+
+        <com.noober.background.view.BLConstraintLayout
+            android:id="@+id/changePhone"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="15dp"
+            android:onClick="@{()->presenter.onChangePhoneClick()}"
+            android:padding="20dp"
+            app:bl_corners_radius="2dp"
+            app:bl_ripple_color="@color/click_ripple_color"
+            app:bl_ripple_enable="true"
+            app:bl_solid_color="#fff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/changeInfo"
+            app:layout_constraintTop_toBottomOf="@id/backgroundImg">
+
+            <ImageView
+                android:id="@+id/changePhone_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/personal_phone_change"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/changePhone_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="手机号变更"
+                android:textColor="#ff000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/changePhone_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="点击编辑"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/changePhone_text1"
+                app:layout_constraintTop_toBottomOf="@id/changePhone_text1" />
+        </com.noober.background.view.BLConstraintLayout>
+
+        <com.noober.background.view.BLConstraintLayout
+            android:id="@+id/changePassword"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:onClick="@{()->presenter.onChangePasswordClick()}"
+            android:padding="20dp"
+            app:bl_corners_radius="2dp"
+            app:bl_ripple_color="@color/click_ripple_color"
+            app:bl_ripple_enable="true"
+            app:bl_solid_color="#fff"
+            app:layout_constraintEnd_toStartOf="@id/changeFace"
+            app:layout_constraintStart_toStartOf="@id/changeInfo"
+            app:layout_constraintTop_toBottomOf="@id/changeInfo">
+
+            <ImageView
+                android:id="@+id/changePassword_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/personal_pwd_change"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/changePassword_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="密码变更"
+                android:textColor="#ff000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/changePassword_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="点击编辑"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/changePassword_text1"
+                app:layout_constraintTop_toBottomOf="@id/changePassword_text1" />
+        </com.noober.background.view.BLConstraintLayout>
+
+        <com.noober.background.view.BLConstraintLayout
+            android:id="@+id/changeFace"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
+            android:onClick="@{()->presenter.onChangeFaceClick()}"
+            android:padding="20dp"
+            app:bl_corners_radius="2dp"
+            app:bl_ripple_color="@color/click_ripple_color"
+            app:bl_ripple_enable="true"
+            app:bl_solid_color="#fff"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/changePassword"
+            app:layout_constraintTop_toBottomOf="@id/changePhone">
+
+            <ImageView
+                android:id="@+id/changeFace_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/personal_face_change"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/changeFace_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="7dp"
+                android:text="人脸信息变更"
+                android:textColor="#ff000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toEndOf="@id/changeFace_img"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
+                android:text="点击编辑"
+                android:textColor="#ff666666"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@id/changeFace_text1"
+                app:layout_constraintTop_toBottomOf="@id/changeFace_text1" />
+        </com.noober.background.view.BLConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

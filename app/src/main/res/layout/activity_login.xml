@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.LoginViewModel" />
+
+        <variable
+            name="presenter"
+            type="com.cin.facesign.ui.LoginActivity.Presenter" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:background="#fff"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/login_logo" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="46dp"
+            android:text="登录"
+            android:textColor="#ff333333"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="67dp"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="请输入您的用户名"
+            android:paddingBottom="20dp"
+            android:text="@={viewModel.username}"
+            android:textColorHint="#CDCDCD"
+            android:textSize="16sp" />
+
+        <View style="@style/login_view" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@null"
+            android:gravity="center"
+            android:hint="请输入您的密码"
+            android:inputType="textPassword"
+            android:paddingBottom="20dp"
+            android:text="@={viewModel.password}"
+            android:textColorHint="#CDCDCD"
+            android:textSize="16sp" />
+
+        <View style="@style/login_view" />
+
+        <com.noober.background.view.BLButton
+            android:layout_marginTop="57dp"
+            android:onClick="@{()->presenter.onLoginClick()}"
+            android:text="登录"
+            style="@style/themeButton"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:text="没有账号？注册"
+            android:padding="5dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:onClick="@{()->presenter.onRegisterClick()}"
+            android:textColor="#ff666666"
+            android:textSize="12sp" />
+
+        <View
+            style="@style/login_view"
+            android:layout_marginTop="30dp" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:onClick="@{()->presenter.onFaceLoginClick()}"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <com.noober.background.view.BLLinearLayout
+                android:layout_width="50dp"
+                android:orientation="vertical"
+                android:layout_height="50dp"
+                app:bl_corners_radius="4dp"
+                android:gravity="center"
+                app:bl_solid_color="#F4F8FF">
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@mipmap/login_face_login" />
+            </com.noober.background.view.BLLinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="人脸识别登录"
+                android:textColor="#ff666666"
+                android:textSize="12sp" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

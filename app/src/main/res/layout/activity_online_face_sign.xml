@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.OnlineFaceSignViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/themeBackground">
+
+        <com.cin.facesign.widget.TitleBar
+            android:id="@+id/titleBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fitsSystemWindows="true"
+            app:leftImage="@mipmap/white_back"
+            app:rightImage="@mipmap/face_sign_right_img"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:title="在线面签"
+            app:rightText="转人工面签"
+            app:backgroundColor="#000"
+            app:titleTextColor="#fff" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_weight="2"
+            android:layout_height="0dp">
+            <RelativeLayout
+                android:id="@+id/previewViewContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintHeight_percent="0.6"
+                app:layout_constraintBottom_toTopOf="@id/bottomContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/titleBar">
+
+                <com.cin.facesign.widget.face.TexturePreviewView
+                    android:id="@+id/previewView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </RelativeLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/progressRecyclerView"
+                android:layout_marginTop="30dp"
+                android:layout_marginStart="30dp"
+                app:layout_constraintTop_toTopOf="@id/previewViewContainer"
+                app:layout_constraintStart_toStartOf="@id/previewViewContainer"
+                items="@{viewModel.progressData}"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </FrameLayout>
+
+        <com.noober.background.view.BLLinearLayout
+            android:id="@+id/bottomContainer"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            app:bl_corners_topLeftRadius="15dp"
+            app:bl_corners_topRightRadius="15dp"
+            app:bl_solid_color="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/previewViewContainer">
+            <com.noober.background.view.BLView
+                android:layout_marginTop="20dp"
+                android:layout_gravity="center_horizontal"
+                app:bl_corners_radius="5dp"
+                android:layout_width="30dp"
+                android:layout_height="2dp"
+                app:bl_solid_color="#fff"/>
+            <LinearLayout
+                android:layout_marginTop="18dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:layout_width="match_parent"
+                android:background="#000"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
+                    android:text="身份验证："
+                    android:textColor="#fff"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
+                
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/face_sign_voice"/>
+            </LinearLayout>
+            <TextView
+                android:text="@{viewModel.identityAuthText,default=请您针对摄像手持身份证}"
+                android:layout_marginTop="13dp"
+                android:layout_marginStart="30dp"
+                android:layout_marginEnd="30dp"
+                android:textColor="#BEBEBE"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+        </com.noober.background.view.BLLinearLayout>
+    </LinearLayout>
+
+</layout>

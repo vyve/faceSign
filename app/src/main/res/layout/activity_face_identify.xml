@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.FaceIdentifyViewModel" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/faceIdentify_rootView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/faceIdentify_preview_margin">
+
+            <com.cin.facesign.widget.face.TexturePreviewView
+                android:id="@+id/faceIdentify_previewView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </RelativeLayout>
+
+
+
+        <FrameLayout
+            android:id="@+id/faceIdentify_cameraLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#ffffff" />
+
+        <com.cin.facesign.widget.face.FaceRoundView
+            android:id="@+id/faceIdentify_faceRoundView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/faceIdentify_nameView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="50dp"
+            android:textColor="@android:color/holo_orange_light"
+            android:textSize="18sp" />
+
+        <ImageView
+            android:id="@+id/closeIv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="20dp"
+            android:src="@mipmap/identify_close" />
+
+        <ImageView
+            android:id="@+id/faceIdentify_success"
+            android:layout_width="@dimen/faceIdentify_success_width"
+            android:layout_height="@dimen/faceIdentify_success_width"
+            android:src="@mipmap/icon_success"
+            android:visibility="gone" />
+
+    </RelativeLayout>
+
+</layout>

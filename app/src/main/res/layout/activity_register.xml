@@ -1,0 +1,303 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.RegisterViewModel" />
+
+        <variable
+            name="presenter"
+            type="com.cin.facesign.ui.RegisterActivity.Presenter" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#fff"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <com.cin.facesign.widget.TitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="注册账号" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="姓名&#160;&#160;&#8201;&#160;&#160;&#8201;"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="请输入姓名"
+                        android:paddingBottom="19dp"
+                        android:text="@={viewModel.username}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="19dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="性别&#160;&#160;&#8201;&#160;&#160;&#8201;"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <RadioGroup
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="男" />
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="30dp"
+                            android:text="女" />
+                    </RadioGroup>
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="身份证&#160;&#160;&#8201;"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="请输入身份证号码"
+                        android:paddingBottom="19dp"
+                        android:text="@={viewModel.idCard}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="+86&#160;&#160;&#8201;&#160;&#160;&#8201;&#160;&#160;&#8201;"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginStart="10dp"
+                        android:layout_weight="1"
+                        android:background="@null"
+                        android:gravity="center_vertical"
+                        android:hint="请输入手机号"
+                        android:text="@={viewModel.phone}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+
+                    <com.noober.background.view.BLButton
+                        android:layout_width="100dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="13dp"
+                        android:layout_marginBottom="13dp"
+                        android:onClick="@{()->presenter.onGetCodeClick()}"
+                        android:text="获取验证码"
+                        android:textColor="#ff999999"
+                        android:textSize="12sp"
+                        app:bl_corners_radius="5dp"
+                        app:bl_solid_color="#F1F1F1" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="验证码&#160;&#160;&#8201;"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="请输入验证码"
+                        android:paddingBottom="19dp"
+                        android:text="@={viewModel.phoneCodeBean.model.code}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="设置密码"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="（6-20位字母数组组合）"
+                        android:paddingBottom="19dp"
+                        android:text="@={viewModel.password}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="确认密码"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <EditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:background="@null"
+                        android:hint="（6-20位字母数组组合）"
+                        android:paddingBottom="19dp"
+                        android:text="@={viewModel.passwordAgain}"
+                        android:textColor="#333333"
+                        android:textColorHint="#CDCDCD"
+                        android:textSize="16sp" />
+                </LinearLayout>
+
+                <View style="@style/login_view" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="面容ID采集"
+                        android:textColor="#ff333333"
+                        android:textSize="16sp" />
+
+                    <Switch
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:checked="true" />
+
+                </LinearLayout>
+
+                <ImageView
+                    android:id="@+id/register_faceImg"
+                    android:layout_width="match_parent"
+                    android:src="@mipmap/login_face"
+                    android:layout_height="150dp"
+                    android:onClick="@{()->presenter.startFaceIdentify()}"
+                    android:layout_marginTop="18dp"/>
+
+                <com.noober.background.view.BLButton
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="40dp"
+                    android:layout_marginBottom="30dp"
+                    android:onClick="@{()->presenter.onRegisterClick()}"
+                    android:text="注册"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp"
+                    android:textStyle="bold"
+                    app:bl_corners_radius="4dp"
+                    app:bl_gradient_angle="0"
+                    app:bl_gradient_endColor="#FF7800"
+                    app:bl_gradient_startColor="#FEA800" />
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+</layout>

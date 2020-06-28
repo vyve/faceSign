@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#00A6F5</color>
+
+    <color name="themeBackground">#fff</color>
+
+    <color name="login_view_background">#E5E5E5</color>
+    <color name="main_bottom_table_select_true">#FF7C00</color>
+    <color name="main_bottom_table_select_false">#66333333</color>
+
+    <color name="click_ripple_color">#71C671</color>
+</resources>

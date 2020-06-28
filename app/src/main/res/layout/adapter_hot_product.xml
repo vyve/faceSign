@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="bean"
+            type="com.cin.facesign.bean.ProductBean" />
+    </data>
+
+    <com.noober.background.view.BLConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:bl_corners_radius="2dp"
+        app:bl_solid_color="#fff">
+
+        <com.noober.background.view.BLImageView
+            android:id="@+id/filterImg"
+            android:layout_width="match_parent"
+            android:layout_height="130dp"
+            app:bl_corners_topLeftRadius="2dp"
+            app:bl_corners_topRightRadius="2dp"
+            app:bl_solid_color="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="人人安康百万医疗险"
+            android:textColor="#ff666666"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/filterImg" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@id/title"
+            app:layout_constraintTop_toBottomOf="@id/title">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="¥"
+                android:textColor="#ffff7a00"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:text="50"
+                android:textColor="#ffff7a00"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="起"
+                android:layout_marginStart="1dp"
+                android:textColor="#ffff7a00"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <com.noober.background.view.BLTextView
+            android:text="家庭首选"
+            android:textColor="#fff6f6f6"
+            app:layout_constraintStart_toStartOf="@id/filterImg"
+            app:layout_constraintTop_toTopOf="@id/filterImg"
+            android:paddingStart="7dp"
+            android:paddingEnd="7dp"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:textSize="12sp"
+            app:bl_solid_color="#FFA300"
+            app:bl_corners_topLeftRadius="2dp"
+            app:bl_corners_bottomRightRadius="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </com.noober.background.view.BLConstraintLayout>
+</layout>

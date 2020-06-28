@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="faceIdentify_success_width">45dp</dimen>
+    <dimen name="faceIdentify_preview_margin">50dp</dimen>
+    <dimen name="faceIdentify_detect_out">2dp</dimen>
+</resources>
