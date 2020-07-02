@@ -6,6 +6,7 @@ import android.os.Message;
 import android.util.Log;
 import android.util.Pair;
 
+import com.baidu.tts.client.SpeechError;
 import com.baidu.tts.client.SpeechSynthesizeBag;
 import com.baidu.tts.client.SpeechSynthesizer;
 import com.baidu.tts.client.SpeechSynthesizerListener;
@@ -32,6 +33,15 @@ public class FaceSignSynthesizer {
 
     protected static volatile boolean isInitied = false;
     public static  final int SPEECH_SYNTHESIS_INIT_SUCCESS = 2;
+    private OnSpeakListener listener;
+
+    public interface OnSpeakListener{
+        void onSpeakFinish();
+    }
+
+    public void setListener(OnSpeakListener listener) {
+        this.listener = listener;
+    }
 
     public FaceSignSynthesizer(Context context, Handler mainHandler) {
         if (isInitied) {
@@ -57,7 +67,44 @@ public class FaceSignSynthesizer {
 //        SpeechSynthesizerListener listener = config.getListener();
 
         // listener = new SwitchSpeakerListener(mainHandler,context,this); // 测试播放过程中切换发音人逻辑
-//        mSpeechSynthesizer.setSpeechSynthesizerListener(listener);
+        mSpeechSynthesizer.setSpeechSynthesizerListener(new SpeechSynthesizerListener() {
+            @Override
+            public void onSynthesizeStart(String s) {
+
+            }
+
+            @Override
+            public void onSynthesizeDataArrived(String s, byte[] bytes, int i, int i1) {
+
+            }
+
+            @Override
+            public void onSynthesizeFinish(String s) {
+
+            }
+
+            @Override
+            public void onSpeechStart(String s) {
+
+            }
+
+            @Override
+            public void onSpeechProgressChanged(String s, int i) {
+
+            }
+
+            @Override
+            public void onSpeechFinish(String s) {
+                if (listener!=null){
+                    listener.onSpeakFinish();
+                }
+            }
+
+            @Override
+            public void onError(String s, SpeechError speechError) {
+
+            }
+        });
 
 
         // 请替换为语音开发者平台上注册应用得到的App ID ,AppKey ，Secret Key ，填写在SynthActivity的开始位置

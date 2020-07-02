@@ -31,9 +31,12 @@ import androidx.annotation.Nullable;
 import com.blankj.utilcode.util.NetworkUtils;
 import com.chad.library.BR;
 import com.cin.facesign.R;
+import com.cin.facesign.bean.eventbus.DocumentReadFinishEvent;
 import com.cin.facesign.databinding.ActivityWebBinding;
 import com.cin.facesign.viewmodel.WebViewModel;
 import com.cin.mylibrary.base.BaseActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by 王新超 on 2020/6/18.
@@ -286,6 +289,7 @@ public class WebActivity extends BaseActivity<ActivityWebBinding, WebViewModel> 
         binding.webWebView.removeAllViews();
         binding.webWebView.destroy();
         super.onDestroy();
+        EventBus.getDefault().post(new DocumentReadFinishEvent());
         mHandler.removeCallbacksAndMessages(null);
     }
 

@@ -30,13 +30,17 @@
             android:name="org.apache.http.legacy"
             android:required="false" />
 
-        <activity android:name=".ui.MainActivity"
-            android:launchMode="singleTop">
+        <activity android:name=".ui.SplashActivity"
+            android:theme="@style/splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".ui.MainActivity"
+            android:launchMode="singleTop">
+
         </activity>
         <activity android:name=".ui.LoginActivity"
             android:launchMode="singleTask">
@@ -53,6 +57,13 @@
             android:screenOrientation="landscape"/>
         <activity android:name=".ui.FaceSignFinishActivity" />
         <activity android:name=".ui.WebActivity" />
+        <activity android:name=".widget.dialog.asr.AsrSpeechDialog"
+            android:configChanges="orientation|keyboardHidden|screenLayout"
+            android:theme="@android:style/Theme.Dialog"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".ui.ElectronicDocumentActivity" />
+
     </application>
 
 </manifest>

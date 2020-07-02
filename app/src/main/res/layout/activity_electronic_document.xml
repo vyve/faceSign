@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="presenter"
+            type="com.cin.facesign.ui.ElectronicDocumentActivity.Presenter" />
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.ElectronicDocumentViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
+
+        <com.cin.facesign.widget.TitleBar
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:title="电子文档" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingStart="30dp"
+                android:paddingEnd="30dp">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="30dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="人人安康”百万医疗保险"
+                    android:textColor="#ff333333"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="本产品接受的投保年龄范围？
+0至60周岁（含）可投保本产品，60周岁以上只能续保。投保时为0周岁的，应当为出生满28日且已健康出院的婴儿。
+
+我已经参加了社会医疗保险，是否还有必要购买本产品？
+社会医疗保险不仅报销范围受医保目录的限制，而且在赔付比例和赔付上限方面都有限制规定。一旦遇到重特大疾病（如癌症），将需要庞大的医疗费用，且很多是社会医疗保险不能覆盖的自费药和自费项目，患者仍需要自己承担高额医疗费用。而本产品赔付范围广、100%比例赔付，是专门针对社会医疗保险的最好补充。
+
+社会医疗保险报销的金额是否可用于抵扣免赔额？
+不可以。通过社会医疗保险和公费医疗保险获得的补偿，不可用于抵扣免赔额，但通过其他途径已获得的医疗费用补偿可用于抵扣免赔额，如 通过企业为员工投保的企业补充医疗保险报销的金额可用于抵扣免赔额。
+门诊医疗费用是否可以报销？\n本产品接受的投保年龄范围？
+0至60周岁（含）可投保本产品，60周岁以上只能续保。投保时为0周岁的，应当为出生满28日且已健康出院的婴儿。
+
+我已经参加了社会医疗保险，是否还有必要购买本产品？
+社会医疗保险不仅报销范围受医保目录的限制，而且在赔付比例和赔付上限方面都有限制规定。一旦遇到重特大疾病（如癌症），将需要庞大的医疗费用，且很多是社会医疗保险不能覆盖的自费药和自费项目，患者仍需要自己承担高额医疗费用。而本产品赔付范围广、100%比例赔付，是专门针对社会医疗保险的最好补充。
+
+社会医疗保险报销的金额是否可用于抵扣免赔额？
+不可以。通过社会医疗保险和公费医疗保险获得的补偿，不可用于抵扣免赔额，但通过其他途径已获得的医疗费用补偿可用于抵扣免赔额，如 通过企业为员工投保的企业补充医疗保险报销的金额可用于抵扣免赔额。
+门诊医疗费用是否可以报销？\n本产品接受的投保年龄范围？
+0至60周岁（含）可投保本产品，60周岁以上只能续保。投保时为0周岁的，应当为出生满28日且已健康出院的婴儿。
+
+我已经参加了社会医疗保险，是否还有必要购买本产品？
+社会医疗保险不仅报销范围受医保目录的限制，而且在赔付比例和赔付上限方面都有限制规定。一旦遇到重特大疾病（如癌症），将需要庞大的医疗费用，且很多是社会医疗保险不能覆盖的自费药和自费项目，患者仍需要自己承担高额医疗费用。而本产品赔付范围广、100%比例赔付，是专门针对社会医疗保险的最好补充。
+
+社会医疗保险报销的金额是否可用于抵扣免赔额？
+不可以。通过社会医疗保险和公费医疗保险获得的补偿，不可用于抵扣免赔额，但通过其他途径已获得的医疗费用补偿可用于抵扣免赔额，如 通过企业为员工投保的企业补充医疗保险报销的金额可用于抵扣免赔额。
+门诊医疗费用是否可以报销？" />
+
+                <TextView
+                    android:id="@+id/remain_time"
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:text="@{viewModel.remainTime}"
+                    android:textColor="#ff1677ff"
+                    android:textSize="16sp" />
+
+                <com.noober.background.view.BLButton
+                    android:enabled="@{viewModel.signButtonEnable}"
+                    android:id="@+id/sign"
+                    style="@style/themeButton"
+                    android:onClick="@{()->presenter.onSignClick()}"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="30dp"
+                    android:text="请签字" />
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</layout>

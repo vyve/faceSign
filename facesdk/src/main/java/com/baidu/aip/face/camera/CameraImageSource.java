@@ -65,7 +65,6 @@ public class CameraImageSource extends ImageSource {
                         height1 = temp;
                     }
                 }
-                Log.i("当前线程",Thread.currentThread().getName());
 
                //   FaceSDK.getARGBFromYUVimg(data, argb, width, height, rotation, 0);
 

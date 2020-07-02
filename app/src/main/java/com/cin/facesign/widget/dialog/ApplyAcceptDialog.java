@@ -1,4 +1,4 @@
-package com.cin.facesign.widget;
+package com.cin.facesign.widget.dialog;
 
 import android.content.Context;
 
@@ -17,6 +17,7 @@ public class ApplyAcceptDialog extends BaseDialog {
 
         findViewById(R.id.close).setOnClickListener(v -> {
             dismiss();
+            listener1.onClick(v);
         });
     }
 

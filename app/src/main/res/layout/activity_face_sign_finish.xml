@@ -30,23 +30,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/titleBar" />
 
-        <com.cin.facesign.widget.face.FaceSignTextureView
-            android:id="@+id/faceSignTextureView"
-            android:layout_width="match_parent"
-            android:layout_height="450dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/view1"/>
+
         <LinearLayout
-            android:visibility="visible"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
+            android:layout_height="match_parent"
             android:gravity="center"
             android:orientation="vertical"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/faceSignTextureView">
+            app:layout_constraintStart_toStartOf="parent">
 
             <ImageView
                 android:layout_width="wrap_content"

@@ -102,7 +102,7 @@
                     android:src="@mipmap/face_sign_voice"/>
             </LinearLayout>
             <TextView
-                android:text="@{viewModel.identityAuthText,default=请您针对摄像手持身份证}"
+                android:id="@+id/voiceTextContent"
                 android:layout_marginTop="13dp"
                 android:layout_marginStart="30dp"
                 android:layout_marginEnd="30dp"

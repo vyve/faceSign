@@ -8,9 +8,12 @@ import androidx.annotation.Nullable;
 
 import com.cin.facesign.Constant;
 import com.cin.facesign.R;
+import com.cin.facesign.bean.eventbus.SignatureFinishEvent;
 import com.cin.facesign.databinding.ActivitySignatureBinding;
 import com.cin.facesign.viewmodel.SignatureViewModel;
 import com.cin.mylibrary.base.BaseActivity;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 
@@ -54,6 +57,7 @@ public class SignatureActivity extends BaseActivity<ActivitySignatureBinding, Si
             if (binding.linePathView.getTouched()){
                 try {
                     binding.linePathView.save(Constant.SIGN_PATH);
+                    finish();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -61,5 +65,11 @@ public class SignatureActivity extends BaseActivity<ActivitySignatureBinding, Si
                 showToast("您还没有签名");
             }
         }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        EventBus.getDefault().post(new SignatureFinishEvent());
     }
 }

@@ -1,4 +1,4 @@
-package com.cin.facesign.widget;
+package com.cin.facesign.widget.dialog;
 
 import android.content.Context;
 

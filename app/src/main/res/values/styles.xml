@@ -9,6 +9,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="splash" parent="AppTheme">
+        <item name="android:windowBackground">@mipmap/ic_launcher</item>
+    </style>
 
     <style name="login_view">
         <item name="android:layout_width">match_parent</item>

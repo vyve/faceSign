@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.noober.background.view.BLLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_marginStart="36dp"
+    android:layout_marginEnd="36dp"
+    android:gravity="center"
+    android:orientation="vertical"
+    app:bl_corners_radius="4dp"
+    app:bl_solid_color="#fff">
+
+    <TextView
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="15dp"
+        android:background="?android:attr/selectableItemBackground"
+        android:text="取消"
+        android:textColor="#ff999999"
+        android:textSize="14sp" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:src="@mipmap/dialog_line_up" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="25dp"
+        android:text="正在排队…"
+        android:textColor="#ff333333"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="46dp"
+        android:layout_width="wrap_content"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:layout_height="wrap_content"
+        android:text="前面还有两位顾客，预计耗时10分钟"
+        android:textColor="#ff999999"
+        android:textSize="14sp" />
+</com.noober.background.view.BLLinearLayout>

@@ -8,6 +8,10 @@
     
     
     <string name="face_sign_voice_text1">请您正对摄像头，手持身份证，并把身份证正面放置于规定区域内。</string>
+    <string name="face_sign_voice_text2">天安人寿守护至尊保重疾险产品</string>
+    <string name="face_sign_voice_text3">1.您是自愿参加？</string>
+    <string name="face_sign_voice_text4">电子文档展示</string>
+    <string name="face_sign_voice_text5">该签名是否是您本人签名？</string>
 
 
     <string name="detect_no_face">未检测到人脸</string>

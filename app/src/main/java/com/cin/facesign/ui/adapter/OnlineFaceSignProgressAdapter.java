@@ -15,6 +15,7 @@ import com.cin.facesign.databinding.AdapterOnlinFaceSignProgressBinding;
 import com.noober.background.drawable.DrawableCreator;
 
 /**
+ * 当前流程
  * Created by 王新超 on 2020/6/18.
  */
 public class OnlineFaceSignProgressAdapter extends BaseQuickAdapter<FaceSignProgressBean, BaseViewHolder> {
@@ -34,33 +35,53 @@ public class OnlineFaceSignProgressAdapter extends BaseQuickAdapter<FaceSignProg
                 .setSolidColor(0x33000000)
                 .build();
     }
+
     @Override
     protected void onItemViewHolderCreated(@NonNull BaseViewHolder viewHolder, int viewType) {
         super.onItemViewHolderCreated(viewHolder, viewType);
         DataBindingUtil.bind(viewHolder.itemView);
     }
 
+    /**
+     * 更新当前进度
+     */
+    public void updateProgress(int progress) {
+        for (int i = 0; i < getData().size(); i++) {
+            FaceSignProgressBean item = getItem(i);
+            if (i<=progress){
+                item.setSelect(true);
+                notifyItemChanged(i);
+            }
+        }
+    }
+
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, FaceSignProgressBean faceSignProgressBean) {
-        AdapterOnlinFaceSignProgressBinding binding=baseViewHolder.getBinding();
-        if (binding!=null){
+        AdapterOnlinFaceSignProgressBinding binding = baseViewHolder.getBinding();
+        if (binding != null) {
             binding.setBean(faceSignProgressBean);
             //第一个
-            if (baseViewHolder.getAdapterPosition()==0){
+            if (baseViewHolder.getAdapterPosition() == 0) {
                 binding.view1.setVisibility(View.INVISIBLE);
             }
             //最后一个
-            if (baseViewHolder.getAdapterPosition()==getItemCount()-1){
+            if (baseViewHolder.getAdapterPosition() == getItemCount() - 1) {
                 binding.view2.setVisibility(View.INVISIBLE);
             }
-            if (faceSignProgressBean.isSelect()){
-                binding.content.setBackground(contentSelectDrawable);
+            if (faceSignProgressBean.isSelect()) {
+                binding.content.setBackground(new DrawableCreator.Builder()
+                        .setCornersRadius(SizeUtils.dp2px(20))
+                        .setSolidColor(0x80000000)
+                        .build());
                 binding.content.setTextColor(0xffffffff);
                 binding.view1.setBackgroundColor(0xffffffff);
                 binding.view2.setBackgroundColor(0xffffffff);
                 binding.checkedImg.setImageResource(R.mipmap.face_sign_progress_img_true);
-            }else {
-                binding.content.setBackground(contentUnSelectDrawable);
+            } else {
+                binding.content.setBackground( new DrawableCreator.Builder()
+                        .setCornersRadius(SizeUtils.dp2px(20))
+                        .setSolidColor(0x33000000)
+                        .build());
                 binding.content.setTextColor(0x80ffffff);
                 binding.view1.setBackgroundColor(0xffB0B0B2);
                 binding.view2.setBackgroundColor(0xffB0B0B2);
