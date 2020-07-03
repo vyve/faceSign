@@ -17,7 +17,7 @@ public class ElectronicDocumentViewModel extends BaseViewModel {
     public ObservableField<String> remainTime = new ObservableField<>();
     public ObservableField<Boolean> signButtonEnable = new ObservableField<>();
     private Handler mHandler;
-    private int currentTime = 60;
+    private int currentTime = 10;
     @SuppressLint("HandlerLeak")
     public ElectronicDocumentViewModel(@NonNull Application application) {
         super(application);

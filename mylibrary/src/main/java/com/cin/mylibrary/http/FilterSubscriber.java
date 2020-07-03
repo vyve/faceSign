@@ -41,6 +41,8 @@ public class FilterSubscriber<T> extends Subscriber<T> {
             if (exception.message.equals("401")) {
                 error = "登录过期";
             }
+        }else {
+            error = e.getMessage();
         }
     }
 

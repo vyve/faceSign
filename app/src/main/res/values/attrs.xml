@@ -50,4 +50,7 @@
             <enum name="three" value="3" />
         </attr>
     </declare-styleable>
+    <declare-styleable name="TexturePreviewView">
+        <attr name="type" format="integer"/>
+    </declare-styleable>
 </resources>

@@ -15,9 +15,9 @@ import java.util.List;
 public class BindingAdapterUtils {
 
     @BindingAdapter({"items"})
-    public  static <T> void setListItems(RecyclerView recyclerView, List<T> items){
-        BaseQuickAdapter<T, BaseViewHolder> adapter= (BaseQuickAdapter<T, BaseViewHolder>) recyclerView.getAdapter();
-        if (adapter!=null){
+    public static <T> void setListItems(RecyclerView recyclerView, List<T> items) {
+        BaseQuickAdapter<T, BaseViewHolder> adapter = (BaseQuickAdapter<T, BaseViewHolder>) recyclerView.getAdapter();
+        if (adapter != null && items != null) {
             adapter.replaceData(items);
         }
     }

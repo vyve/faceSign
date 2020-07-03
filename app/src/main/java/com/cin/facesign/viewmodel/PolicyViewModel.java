@@ -5,8 +5,13 @@ import android.app.Application;
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
+import com.blankj.utilcode.util.SPUtils;
+import com.cin.facesign.Constant;
 import com.cin.facesign.bean.InsurancePolicyBean;
 import com.cin.mylibrary.base.BaseViewModel;
+import com.cin.mylibrary.bean.BaseResponseBean;
+import com.cin.mylibrary.http.FilterSubscriber;
+import com.cin.mylibrary.http.RetrofitHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,5 +32,24 @@ public class PolicyViewModel extends BaseViewModel {
             list.add(bean);
         }
         data.set(list);
+    }
+
+    /**
+     * 获取列表
+     */
+    public void getData(){
+        int userId = SPUtils.getInstance().getInt(Constant.userId);
+        RetrofitHelper.getInstance().getUserInsurances(userId,new FilterSubscriber<BaseResponseBean>(getApplication()){
+            @Override
+            public void onNext(BaseResponseBean baseResponseBean) {
+                super.onNext(baseResponseBean);
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
     }
 }

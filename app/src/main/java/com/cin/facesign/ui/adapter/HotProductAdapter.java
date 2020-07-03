@@ -6,14 +6,14 @@ import androidx.databinding.DataBindingUtil;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.viewholder.BaseViewHolder;
 import com.cin.facesign.R;
-import com.cin.facesign.bean.ProductBean;
 import com.cin.facesign.databinding.AdapterHotProductBinding;
+import com.cin.mylibrary.bean.InsuranceBean;
 
 /**
  * 热销产品
  * Created by 王新超 on 2020/6/17.
  */
-public class HotProductAdapter extends BaseQuickAdapter<ProductBean, BaseViewHolder> {
+public class HotProductAdapter extends BaseQuickAdapter<InsuranceBean, BaseViewHolder> {
     public HotProductAdapter() {
         super(R.layout.adapter_hot_product);
     }
@@ -25,7 +25,7 @@ public class HotProductAdapter extends BaseQuickAdapter<ProductBean, BaseViewHol
     }
 
     @Override
-    protected void convert(@NonNull BaseViewHolder baseViewHolder, ProductBean bean) {
+    protected void convert(@NonNull BaseViewHolder baseViewHolder, InsuranceBean bean) {
         AdapterHotProductBinding binding = baseViewHolder.getBinding();
         if (binding!=null){
             binding.setBean(bean);

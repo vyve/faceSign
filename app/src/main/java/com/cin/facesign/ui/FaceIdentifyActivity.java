@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentActivity;
 
 import com.baidu.aip.ImageFrame;
 import com.baidu.aip.face.camera.CameraImageSource;
@@ -27,6 +28,7 @@ import com.baidu.aip.face.FaceFilter;
 import com.baidu.aip.face.camera.PermissionCallback;
 import com.baidu.idl.facesdk.FaceInfo;
 import com.blankj.utilcode.util.ScreenUtils;
+import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.BR;
 import com.cin.facesign.R;
 import com.cin.facesign.databinding.ActivityFaceIdentifyBinding;
@@ -34,8 +36,11 @@ import com.cin.facesign.utils.WaveHelper;
 import com.cin.facesign.viewmodel.FaceIdentifyViewModel;
 import com.cin.facesign.widget.face.WaveView;
 import com.cin.mylibrary.base.BaseActivity;
+import com.permissionx.guolindev.PermissionX;
+import com.permissionx.guolindev.callback.RequestCallback;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 /**
  * 人脸识别、检测
@@ -65,8 +70,15 @@ public class FaceIdentifyActivity extends BaseActivity<ActivityFaceIdentifyBindi
     private boolean mDetectStopped = false;
     private InnerHandler mHandler;
 
-    public static void startActivityForResult(Activity activity, int code) {
-        activity.startActivityForResult(new Intent(activity, FaceIdentifyActivity.class),code);
+    public static void startActivityForResult(FragmentActivity activity, int code) {
+        PermissionX.init(activity).permissions(Manifest.permission.CAMERA)
+                .request((allGranted, grantedList, deniedList) -> {
+            if (allGranted){
+                activity.startActivityForResult(new Intent(activity, FaceIdentifyActivity.class),code);
+            }else {
+                ToastUtils.showShort("权限被拒绝，无法使用该功能！");
+            }
+        });
     }
 
     @Override
@@ -109,15 +121,6 @@ public class FaceIdentifyActivity extends BaseActivity<ActivityFaceIdentifyBindi
                         }
                     }
                 }
-            }
-        });
-
-        cameraImageSource.getCameraControl().setPermissionCallback(new PermissionCallback() {
-            @Override
-            public boolean onRequestPermission() {
-                ActivityCompat.requestPermissions(FaceIdentifyActivity.this,
-                        new String[]{Manifest.permission.CAMERA}, 100);
-                return true;
             }
         });
 

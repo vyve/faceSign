@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-
+        <variable
+            name="viewModel"
+            type="com.cin.facesign.viewmodel.PersonalViewModel" />
         <variable
             name="presenter"
             type="com.cin.facesign.ui.fragment.PersonalFragment.Presenter" />
@@ -56,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:text="张双录"
+            android:text="@{viewModel.name}"
             android:textColor="#ffffffff"
             android:textSize="18sp"
             android:textStyle="bold"
@@ -67,7 +69,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="ID56012"
+            android:text="@{viewModel.userId}"
             android:textColor="#ccffffff"
             android:textSize="15sp"
             app:layout_constraintStart_toStartOf="@id/name"

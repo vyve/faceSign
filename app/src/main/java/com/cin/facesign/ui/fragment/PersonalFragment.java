@@ -4,15 +4,12 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.chad.library.BR;
 import com.cin.facesign.R;
 import com.cin.facesign.databinding.FragmentPersonalBinding;
 import com.cin.facesign.ui.ElectronicDocumentActivity;
-import com.cin.facesign.ui.FaceSignFinishActivity;
 import com.cin.facesign.ui.LoginActivity;
-import com.cin.facesign.ui.SignatureActivity;
-import com.cin.facesign.ui.WebActivity;
 import com.cin.facesign.viewmodel.PersonalViewModel;
-import com.cin.facesign.widget.dialog.TurnHumanServiceDialog;
 import com.cin.mylibrary.base.BaseFragment;
 
 /**
@@ -27,7 +24,7 @@ public class PersonalFragment extends BaseFragment<FragmentPersonalBinding, Pers
 
     @Override
     public int initVariableId() {
-        return 0;
+        return BR.viewModel;
     }
 
     @Override

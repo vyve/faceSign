@@ -2,12 +2,17 @@ package com.cin.mylibrary.http;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.cin.mylibrary.AppConstant;
+import com.cin.mylibrary.bean.InsuranceBean;
+import com.cin.mylibrary.bean.UserBean;
 import com.cin.mylibrary.request_bean.BaseRequestBean;
 import com.cin.mylibrary.request_bean.LoginRequestBean;
 import com.cin.mylibrary.request_bean.RegisterFaceBean;
 import com.cin.mylibrary.bean.BaseResponseBean;
 import com.cin.mylibrary.bean.FaceSDKRegisterBean;
 import com.cin.mylibrary.bean.FaceSDKToken;
+import com.cin.mylibrary.request_bean.RegisterRequestBean;
+
+import java.util.List;
 
 import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
@@ -57,18 +62,18 @@ public class RetrofitHelper {
         RetrofitUtil.getInstance().getAppService().getAllInsurance(requestBean)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(subscriber);
 
     }
 
     /**
      * 获取热门保险
      */
-    public void getHotInsurance(BaseRequestBean requestBean,Subscriber<BaseResponseBean> subscriber){
+    public void getHotInsurance(BaseRequestBean requestBean,Subscriber<BaseResponseBean<List<InsuranceBean>>> subscriber){
         RetrofitUtil.getInstance().getAppService().getHotInsurance(requestBean)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(subscriber);
     }
 
     /**
@@ -78,16 +83,39 @@ public class RetrofitHelper {
         RetrofitUtil.getInstance().getAppService().getInsuranceDetail(requestBean,id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(subscriber);
     }
 
-    public void login(String username,String password,Subscriber<BaseResponseBean> subscriber){
+    /**
+     * 登录
+     */
+    public void login(String username,String password,Subscriber<BaseResponseBean<UserBean>> subscriber){
         LoginRequestBean bean = new LoginRequestBean();
         bean.setUserName(username);
         bean.setPassword(password);
         RetrofitUtil.getInstance().getAppService().login(bean)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
+                .subscribe(subscriber);
+    }
+
+    /**
+     * 注册
+     */
+    public void register(RegisterRequestBean bean,Subscriber<BaseResponseBean<UserBean>> subscriber){
+        RetrofitUtil.getInstance().getAppService().register(bean)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    /**
+     * 获取用户所有保险
+     */
+    public void getUserInsurances(Integer userId,Subscriber<BaseResponseBean> subscriber){
+        RetrofitUtil.getInstance().getAppService().getUserInsurances(new BaseRequestBean(),userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
     }
 }

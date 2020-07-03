@@ -48,6 +48,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBindingImpl, HomeView
         binding.hotProductRecyclerView.addItemDecoration(new GridSpacingItemDecoration(2, SizeUtils.dp2px(9),false));
         HotProductAdapter hotProductAdapter = new HotProductAdapter();
         binding.hotProductRecyclerView.setAdapter(hotProductAdapter);
+
         viewModel.getHotProductData();
 
         viewModel.getBannerData();

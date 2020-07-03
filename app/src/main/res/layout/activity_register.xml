@@ -81,16 +81,20 @@
                         android:textSize="16sp" />
 
                     <RadioGroup
+                        android:id="@+id/sex_radioGroup"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
                         <RadioButton
+                            android:checked="true"
+                            android:id="@+id/sex_man"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="男" />
 
                         <RadioButton
+                            android:id="@+id/sex_woman"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="30dp"
@@ -150,6 +154,7 @@
                         android:background="@null"
                         android:gravity="center_vertical"
                         android:hint="请输入手机号"
+                        android:inputType="phone"
                         android:text="@={viewModel.phone}"
                         android:textColor="#333333"
                         android:textColorHint="#CDCDCD"
@@ -188,9 +193,10 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="@null"
+                        android:inputType="number"
                         android:hint="请输入验证码"
                         android:paddingBottom="19dp"
-                        android:text="@={viewModel.phoneCodeBean.model.code}"
+                        android:text="@={viewModel.phoneCode}"
                         android:textColor="#333333"
                         android:textColorHint="#CDCDCD"
                         android:textSize="16sp" />
@@ -216,6 +222,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="@null"
+                        android:inputType="textPassword"
                         android:hint="（6-20位字母数组组合）"
                         android:paddingBottom="19dp"
                         android:text="@={viewModel.password}"
@@ -244,6 +251,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="10dp"
                         android:background="@null"
+                        android:inputType="textPassword"
                         android:hint="（6-20位字母数组组合）"
                         android:paddingBottom="19dp"
                         android:text="@={viewModel.passwordAgain}"

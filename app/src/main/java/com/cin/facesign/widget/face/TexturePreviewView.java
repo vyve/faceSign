@@ -4,6 +4,7 @@
 package com.cin.facesign.widget.face;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -19,6 +20,7 @@ import androidx.annotation.Nullable;
 import com.baidu.aip.face.PreviewView;
 import com.baidu.aip.face.camera.AutoFitTextureView;
 import com.baidu.ocr.ui.camera.MaskView;
+import com.cin.facesign.R;
 
 /**
  * 基于 系统TextureView实现的预览View;
@@ -42,29 +44,33 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
     private int mRatioHeight = 0;
 
     public TexturePreviewView(@NonNull Context context) {
-        super(context);
-        init();
+        this(context,null);
     }
 
-    public TexturePreviewView(@NonNull Context context,
-                              @Nullable AttributeSet attrs) {
-        super(context, attrs);
-        init();
+    public TexturePreviewView(@NonNull Context context, @Nullable AttributeSet attrs) {
+        this(context, attrs,0);
     }
 
-    public TexturePreviewView(@NonNull Context context, @Nullable AttributeSet attrs,
-                              @AttrRes int defStyleAttr) {
+    public TexturePreviewView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.TexturePreviewView);
+        //0 默认人脸注册识别 1 面签
+        int type = array.getInteger(R.styleable.TexturePreviewView_type, 0);
+
+        array.recycle();
+        init(type);
     }
 
-    private void init() {
+    private void init(int type) {
+
 
         textureView = new AutoFitTextureView(getContext());
         addView(textureView);
 
-        maskView = new MaskView(getContext());
-        addView(maskView);
+        if (type==1){
+            maskView = new MaskView(getContext());
+            addView(maskView);
+        }
 
     }
 
@@ -136,7 +142,9 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
         previewFrame.top = 0;
         previewFrame.bottom = bottom-top;
         previewFrame.right = right;
-        maskView.layout(left, 0, right, bottom - top);
+        if (maskView!=null) {
+            maskView.layout(left, 0, right, bottom - top);
+        }
         int selfWidth = getWidth();
         int selfHeight = getHeight();
         if (videoWidth == 0 || videoHeight == 0 || selfWidth == 0 || selfHeight == 0) {

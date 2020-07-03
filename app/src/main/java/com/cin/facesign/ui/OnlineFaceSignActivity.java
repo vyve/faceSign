@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -24,9 +25,12 @@ import com.baidu.aip.face.DetectRegionProcessor;
 import com.baidu.aip.face.FaceDetectManager;
 import com.baidu.speech.asr.SpeechConstant;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.PathUtils;
 import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.BR;
+import com.cin.facesign.Constant;
 import com.cin.facesign.R;
+import com.cin.facesign.bean.eventbus.ScreenRecordRefusedEvent;
 import com.cin.facesign.bean.eventbus.SignatureFinishEvent;
 import com.cin.facesign.control.FaceSignSynthesizer;
 import com.cin.facesign.databinding.ActivityOnlineFaceSignBinding;
@@ -39,6 +43,7 @@ import com.cin.facesign.widget.dialog.TurnHumanServiceDialog;
 import com.cin.facesign.widget.dialog.asr.AsrSpeechDialog;
 import com.cin.facesign.widget.dialog.asr.DigitalDialogInput;
 import com.cin.mylibrary.base.BaseActivity;
+import com.cin.facesign.widget.ScreenRecordHelper;
 import com.permissionx.guolindev.PermissionX;
 
 import org.greenrobot.eventbus.EventBus;
@@ -57,6 +62,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
 
 
     private LineUpDialog lineUpDialog;
+    private ScreenRecordHelper screenRecordHelper;
 
     public static void startActivity(FragmentActivity activity) {
         PermissionX.init(activity).permissions(
@@ -131,6 +137,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
 
     private boolean firstSpeechInitSuccess = true;
     int a = -1;
+    private boolean isAlive;
 
     @SuppressLint("HandlerLeak")
     private Handler mHandler = new Handler() {
@@ -167,9 +174,10 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                     break;
                 case SHOW_ASR_SPEECH_DIALOG:
                     //提示是否是本人签名完成 展示弹窗
-
-                    Intent intent = new Intent(OnlineFaceSignActivity.this, AsrSpeechDialog.class);
-                    startActivityForResult(intent, ASR_REQUEST);
+                    if (isAlive) {
+                        Intent intent = new Intent(OnlineFaceSignActivity.this, AsrSpeechDialog.class);
+                        startActivityForResult(intent, ASR_REQUEST);
+                    }
                     break;
                 case FACE_SIGN_FINISH:
                     FaceSignFinishActivity.startActivity(OnlineFaceSignActivity.this);
@@ -204,6 +212,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
 
     @Override
     public void init() {
+        isAlive = true;
         EventBus.getDefault().register(this);
         mImmersionBar.statusBarDarkFont(false).init();
 
@@ -281,6 +290,10 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             });
             dialog.setOnButton2ClickListener(v -> showToast("线下面签"));
         });
+
+        //开始屏幕录制
+        screenRecordHelper = new ScreenRecordHelper(this, null, Constant.FILE_SAVE_PATH,"screenRecord");
+        screenRecordHelper.startRecord();
     }
 
     /**
@@ -331,12 +344,17 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             //最后一步签名完成
             currentProgress++;
             mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
+        }else if (object instanceof ScreenRecordRefusedEvent){
+            finish();
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            screenRecordHelper.onActivityResult(requestCode, resultCode, data);
+        }
         if (requestCode == ASR_REQUEST && resultCode == RESULT_OK && data != null) {
             String result = data.getStringExtra("result");
             LogUtils.i(result);
@@ -372,19 +390,22 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             faceDetectManager.startFaceIdentify();
             mDetectStopped = false;
         }
-
+        screenRecordHelper.resume();
+        isAlive = true;
     }
 
 
     @Override
     protected void onStop() {
         super.onStop();
+        isAlive = false;
         mBeginDetect = false;
         mDetectStopped = true;
         faceDetectManager.stop();
         if (synthesizer != null) {
             synthesizer.stop();
         }
+        screenRecordHelper.pause();
     }
 
     @Override
@@ -394,6 +415,8 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             synthesizer.release();
         }
         super.onDestroy();
+        screenRecordHelper.stopRecord(0, 0, null);
+
         EventBus.getDefault().unregister(this);
         mHandler.removeCallbacksAndMessages(null);
     }

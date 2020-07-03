@@ -1,16 +1,19 @@
 package com.cin.facesign.viewmodel;
 
 import android.app.Application;
+import android.content.Context;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
-import androidx.lifecycle.MutableLiveData;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.blankj.utilcode.util.ToastUtils;
-import com.cin.mylibrary.base.BaseModel;
+import com.cin.facesign.Constant;
+import com.cin.facesign.ui.MainActivity;
 import com.cin.mylibrary.base.BaseViewModel;
 import com.cin.mylibrary.bean.BaseResponseBean;
+import com.cin.mylibrary.bean.UserBean;
 import com.cin.mylibrary.http.FilterSubscriber;
 import com.cin.mylibrary.http.RetrofitHelper;
 
@@ -22,19 +25,16 @@ public class LoginViewModel extends BaseViewModel {
     public ObservableField<String> username;
     public ObservableField<String> password;
 
-    public MutableLiveData<BaseModel> loginResult;
-
     public LoginViewModel(@NonNull Application application) {
         super(application);
         username = new ObservableField<>();
         password = new ObservableField<>();
-        loginResult = new MutableLiveData<>();
     }
 
     /**
      * 登录
      */
-    public void login() {
+    public void login(Context context) {
         if (TextUtils.isEmpty(username.get())) {
             ToastUtils.showShort("用户名不能为空！");
             return;
@@ -43,21 +43,27 @@ public class LoginViewModel extends BaseViewModel {
             ToastUtils.showShort("密码不能为空！");
             return;
         }
-        BaseModel model = new BaseModel<>();
-        RetrofitHelper.getInstance().login(username.get(),password.get(),new FilterSubscriber<BaseResponseBean>(getApplication()){
+        showLoadingDialog();
+        RetrofitHelper.getInstance().login(username.get(),password.get(),new FilterSubscriber<BaseResponseBean<UserBean>>(context){
+
             @Override
-            public void onNext(BaseResponseBean bean) {
+            public void onNext(BaseResponseBean<UserBean> bean) {
                 super.onNext(bean);
-                model.setSuccess(true);
-                loginResult.postValue(model);
+                //保存userId
+                SPUtils.getInstance().put(Constant.userId,bean.getData().getId());
+                SPUtils.getInstance().put(Constant.isLogin,true);
+                SPUtils.getInstance().put(Constant.username,bean.getData().getName());
+                MainActivity.startActivity(context);
+                dismissLoadingDialog();
+                showToast("登录成功");
+                finish();
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
-                model.setSuccess(false);
-                model.setErrorMsg(e.getMessage());
-                loginResult.postValue(model);
+                dismissLoadingDialog();
+                showToast(error);
             }
         });
     }

@@ -1,7 +1,6 @@
 package com.cin.mylibrary.http;
 
 import com.blankj.utilcode.util.LogUtils;
-import com.cin.mylibrary.base.BaseModel;
 import com.cin.mylibrary.bean.BaseResponseBean;
 import com.google.gson.Gson;
 import com.google.gson.TypeAdapter;
@@ -35,21 +34,21 @@ import static okhttp3.internal.Util.UTF_8;
  * Created by 王新超 on 2018/1/31.
  */
 
-public class GsonFactory extends Converter.Factory {
+public class BDGsonFactory extends Converter.Factory {
 
     private final Gson gson;
 
-    private GsonFactory(Gson gson) {
+    private BDGsonFactory(Gson gson) {
         if (gson == null) throw new NullPointerException("gson == null");
         this.gson = gson;
     }
 
-    public static GsonFactory create() {
+    public static BDGsonFactory create() {
         return create(new Gson());
     }
 
-    public static GsonFactory create(Gson gson) {
-        return new GsonFactory(gson);
+    public static BDGsonFactory create(Gson gson) {
+        return new BDGsonFactory(gson);
     }
 
     @Override
@@ -76,35 +75,6 @@ public class GsonFactory extends Converter.Factory {
         @Override
         public T convert(ResponseBody value) throws IOException {
             String response = value.string();
-            LogUtils.i("请求结果", response);
-            /*
-             * Token 失效或者缺失 需要connect 重新获取Token，然后重复请求刚才那个接口
-             */
-            BaseResponseBean bean = gson.fromJson(response, BaseResponseBean.class);
-            int code = bean.getCode();
-            if (code!=200){
-                value.close();
-                throw new ApiException(code, bean.getMessage());
-            }
-//            /*
-//             * Token缺失
-//             */
-//            if (code.equals("0003") && httpStatus.getHeader().getRstInfo().equals("token为空")) {
-//                value.close();
-//                throw new TokenNotExistException();
-//                /*
-//                 * Token失效
-//                 */
-//            } else if (code.equals("0001")) {
-//                value.close();
-//                throw new TokenInvalidException();
-//                /*
-//                 * 其他错误
-//                 */
-//            } else if (!httpStatus.getHeader().getRstCode().equals("0000")) {
-//                value.close();
-//                throw new ApiException(httpStatus.getHeader().getRstCode(), httpStatus.getHeader().getRstInfo());
-//            }
             /*
              * 数据正常，继续向下传递
              */

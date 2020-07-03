@@ -4,27 +4,21 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Base64;
 
 import androidx.annotation.Nullable;
 import androidx.lifecycle.Observer;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.BR;
 import com.cin.facesign.Constant;
 import com.cin.facesign.R;
-import com.cin.facesign.bean.PhoneCodeBean;
 import com.cin.facesign.databinding.ActivityRegisterBinding;
-import com.cin.facesign.utils.FileUtils;
 import com.cin.facesign.viewmodel.RegisterViewModel;
 import com.cin.mylibrary.base.BaseActivity;
 import com.cin.mylibrary.base.BaseModel;
 
-import java.io.File;
 
 /**
  * 注册
@@ -56,30 +50,18 @@ public class RegisterActivity extends BaseActivity<ActivityRegisterBinding, Regi
     @Override
     public void initViewObservable() {
         super.initViewObservable();
-        viewModel.phoneCodeBean.observe(this, new Observer<BaseModel<PhoneCodeBean>>() {
-            @Override
-            public void onChanged(BaseModel<PhoneCodeBean> phoneCodeBeanBaseModel) {
-                if (phoneCodeBeanBaseModel.isSuccess()) {
-                    ToastUtils.showShort("获取成功");
-                } else {
-                    ToastUtils.showShort(phoneCodeBeanBaseModel.getErrorMsg());
-                }
+
+        binding.sexRadioGroup.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId){
+                case R.id.sex_man:
+                    viewModel.sex.set("男");
+                    break;
+                case R.id.sex_woman:
+                    viewModel.sex.set("女");
+                    break;
             }
         });
 
-        viewModel.registerResult.observe(this, new Observer<BaseModel<Object>>() {
-            @Override
-            public void onChanged(BaseModel<Object> baseModel) {
-                dismissLoadingDialog();
-                if (baseModel.isSuccess()) {
-                    //注册成功
-                    showToast("注册成功");
-                    MainActivity.startActivity(RegisterActivity.this);
-                } else {
-                    showToast(baseModel.getErrorMsg());
-                }
-            }
-        });
     }
 
     public class Presenter {
@@ -91,28 +73,7 @@ public class RegisterActivity extends BaseActivity<ActivityRegisterBinding, Regi
          * 开始注册
          */
         public void onRegisterClick() {
-            if (TextUtils.isEmpty(viewModel.bitmapPath.get())) {
-                showToast("请先进行人脸检测");
-                return;
-            }
-
-            final File file = new File(Constant.FACE_IDENTIFY_LOCAL_PATH);
-            if (!file.exists()) {
-                showToast("文件不存在");
-                return;
-            }
-            String base64Img = "";
-            try {
-                byte[] buf = FileUtils.readFile(file);
-
-                base64Img = new String(Base64.encode(buf, Base64.NO_WRAP));
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-
-            showLoadingDialog();
-            viewModel.register(base64Img);
+            viewModel.register(RegisterActivity.this);
         }
 
         /**

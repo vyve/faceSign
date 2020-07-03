@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 
@@ -32,6 +33,7 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initViewDataBinding(savedInstanceState);
+        registerUIChangeLiveDataCallBack();
         mImmersionBar = ImmersionBar.with(this);
         mImmersionBar.transparentStatusBar()
                 .statusBarDarkFont(true)
@@ -66,6 +68,30 @@ public abstract class BaseActivity<V extends ViewDataBinding, VM extends BaseVie
         binding.setLifecycleOwner(this);
         //让ViewModel拥有View的生命周期感应
         getLifecycle().addObserver(viewModel);
+    }
+
+    /**
+     * 注册viewModel的UI回调
+     */
+    protected void registerUIChangeLiveDataCallBack() {
+        viewModel.showDialogEvent.observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(Void aVoid) {
+                showLoadingDialog();
+            }
+        });
+        viewModel.dismissDialogEvent.observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(Void aVoid) {
+                dismissLoadingDialog();
+            }
+        });
+        viewModel.finishEvent.observe(this, new Observer<Void>() {
+            @Override
+            public void onChanged(Void aVoid) {
+                finish();
+            }
+        });
     }
 
     @Override

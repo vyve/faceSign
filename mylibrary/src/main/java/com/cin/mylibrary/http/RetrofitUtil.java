@@ -53,7 +53,7 @@ public class RetrofitUtil {
                             .client(clientBuilder.build())
                             .baseUrl("https://aip.baidubce.com")
                             .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
-                            .addConverterFactory(GsonFactory.create())
+                            .addConverterFactory(BDGsonFactory.create())
                             .build();
                 }
             }

@@ -169,15 +169,15 @@ public class MaskView extends View {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w > 0 && h > 0) {
             if (maskType != MASK_TYPE_PASSPORT) {
-                float ratio = h > w ? 0.9f : 0.72f;
-//                float ratio = 0.3f;
+//                float ratio = h > w ? 0.9f : 0.72f;
+                float ratio = 0.5f;
 
                 int width = (int) (w * ratio);
                 int height = width * 400 / 620;
 
                 int left = (w - width) / 2;
-//                int top = h/2+(h/2 - height) / 2;
-                int top = (h - height) / 2;
+                int top = h/2+(h/2 - height) / 2+100;
+//                int top = (h - height) / 2;
                 int right = width + left;
                 int bottom = height + top;
 

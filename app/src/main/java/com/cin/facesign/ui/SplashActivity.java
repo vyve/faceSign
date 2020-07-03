@@ -31,6 +31,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
             } else {
                 LoginActivity.startActivity(SplashActivity.this);
             }
+            finish();
         }
     };
 

@@ -45,6 +45,7 @@
 
                 <com.cin.facesign.widget.face.TexturePreviewView
                     android:id="@+id/previewView"
+                    app:type="1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
             </RelativeLayout>

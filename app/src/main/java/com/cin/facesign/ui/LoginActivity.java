@@ -5,16 +5,16 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
-import androidx.lifecycle.Observer;
 
-import com.blankj.utilcode.util.ToastUtils;
 import com.cin.facesign.BR;
 import com.cin.facesign.R;
-import com.cin.facesign.bean.LoginBean;
+import com.cin.facesign.bean.eventbus.RegisterFinishEvent;
 import com.cin.facesign.databinding.ActivityLoginBinding;
 import com.cin.facesign.viewmodel.LoginViewModel;
 import com.cin.mylibrary.base.BaseActivity;
-import com.cin.mylibrary.base.BaseModel;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 /**
  * 登录
@@ -38,22 +38,8 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
 
     @Override
     public void init() {
+        EventBus.getDefault().register(this);
         binding.setPresenter(new Presenter());
-    }
-
-    @Override
-    public void initViewObservable() {
-        super.initViewObservable();
-        viewModel.loginResult.observe(this, new Observer<BaseModel>() {
-            @Override
-            public void onChanged(BaseModel baseModel) {
-                if (baseModel.isSuccess()){
-
-                }else {
-                    showToast(baseModel.getErrorMsg());
-                }
-            }
-        });
     }
 
     public class Presenter{
@@ -61,7 +47,7 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
          * 登录
          */
         public void onLoginClick(){
-            viewModel.login();
+            viewModel.login(LoginActivity.this);
         }
 
         /**
@@ -79,4 +65,14 @@ public class LoginActivity extends BaseActivity<ActivityLoginBinding, LoginViewM
         }
     }
 
+    @Subscribe
+    public void onEvent(RegisterFinishEvent event){
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 }
