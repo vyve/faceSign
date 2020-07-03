@@ -14,3 +14,4 @@
 .cxx
 /app/src/test
 /app/src/androidTest
+/ocr_ui/build/
