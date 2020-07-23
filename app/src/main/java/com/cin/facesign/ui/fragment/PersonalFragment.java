@@ -4,11 +4,15 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.BR;
+import com.cin.facesign.Constant;
 import com.cin.facesign.R;
 import com.cin.facesign.databinding.FragmentPersonalBinding;
 import com.cin.facesign.ui.ElectronicDocumentActivity;
+import com.cin.facesign.ui.FaceSignFinishActivity;
 import com.cin.facesign.ui.LoginActivity;
+import com.cin.facesign.utils.oss.UploadHelper;
 import com.cin.facesign.viewmodel.PersonalViewModel;
 import com.cin.mylibrary.base.BaseFragment;
 
@@ -38,7 +42,6 @@ public class PersonalFragment extends BaseFragment<FragmentPersonalBinding, Pers
          */
         public void onChangeInfoClick() {
             showToast("个人信息变更");
-            ElectronicDocumentActivity.startActivity(mActivity);
         }
 
         /**

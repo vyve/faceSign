@@ -177,7 +177,7 @@ class ScreenRecordHelper @JvmOverloads constructor(
             val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
             intent.data = Uri.fromFile(newFile)
             activity.sendBroadcast(intent)
-            showToast("保存到相册成功！")
+//            showToast("保存到相册成功！")
         } else {
             newFile.delete()
             showToast("抱歉，你的手机暂不支持录屏")

@@ -13,6 +13,7 @@ import com.baidu.aip.face.PreviewView;
 import com.baidu.idcardquality.IDcardQualityProcess;
 import com.baidu.ocr.ui.camera.MaskView;
 import com.baidu.ocr.ui.util.ImageUtil;
+import com.blankj.utilcode.util.LogUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -21,13 +22,13 @@ import java.io.IOException;
  * Created by 王新超 on 2020/6/18.
  */
 public class OCRUtil {
-    public static int detect(ImageFrame.OCRFrame ocrFrame, MaskView maskView, PreviewView previewView) {
+    public static Bitmap detect(ImageFrame.OCRFrame ocrFrame, MaskView maskView, PreviewView previewView) {
         byte[] data = ocrFrame.getData();
         int optWidth = ocrFrame.getOptWidth();
         int optHeight = ocrFrame.getOptHeight();
         int rotation = ocrFrame.getRotation();
         if (data == null) {
-            return -1;
+            return null;
         }
 
         YuvImage img = new YuvImage(data, ImageFormat.NV21, optWidth, optHeight, null);
@@ -62,12 +63,16 @@ public class OCRUtil {
 //        int top = height * frameRect.top / ocrMaskHeight;
 //        int right = width * frameRect.right / ocrMaskWidth;
 //        int bottom = height * frameRect.bottom / ocrMaskHeight;
+        int left = (int) maskView.getIdCardIdentifyRect().left;
+        int top = (int) maskView.getIdCardIdentifyRect().top;
+        int right = (int) maskView.getIdCardIdentifyRect().right;
+        int bottom = (int) maskView.getIdCardIdentifyRect().bottom;
 
-        int left = frameRect.left;
-        int top = frameRect.top;
-        int right = frameRect.right;
-        int bottom =frameRect.bottom;
-
+//        int left = frameRect.left;
+//        int top = frameRect.top;
+//        int right = frameRect.right;
+//        int bottom =frameRect.bottom;
+//
         Rect previewFrame = previewView.getPreviewFrame();
         // 高度大于图片
         if (previewFrame.top < 0) {
@@ -105,17 +110,17 @@ public class OCRUtil {
 
         // 90度或者270度旋转
         if (rotation % 180 == 90) {
-            int x = decoder.getWidth() / 2;
-            int y = decoder.getHeight() / 2;
+            int x = previewFrame.width()/2;
+            int y = previewFrame.height()/2;
 
             int rotatedWidth = region.height();
             int rotated = region.width();
 
             // 计算，裁剪框旋转后的坐标
-            region.left = x - rotatedWidth / 2;
-            region.top = y - rotated / 2;
-            region.right = x + rotatedWidth / 2;
-            region.bottom = y + rotated / 2;
+            region.left = x - rotatedWidth / 2-50;
+            region.top = y - rotated / 2-150;
+            region.right = x + rotatedWidth / 2-50;
+            region.bottom = y + rotated / 2-150;
             region.sort();
         }
 
@@ -147,8 +152,13 @@ public class OCRUtil {
         }
 
         int status = IDcardQualityProcess.getInstance().idcardQualityDetectionImg(bitmap, true);
+        LogUtils.i("aaaaa,"+status);
+        if (status!=0){
+            return null;
+        }else {
+            return bitmap;
+        }
 
-        return status;
     }
 
 }

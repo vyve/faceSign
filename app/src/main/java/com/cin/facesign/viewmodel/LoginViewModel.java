@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 
 import com.blankj.utilcode.util.SPUtils;
-import com.blankj.utilcode.util.ToastUtils;
 import com.cin.facesign.Constant;
 import com.cin.facesign.ui.MainActivity;
 import com.cin.mylibrary.base.BaseViewModel;
@@ -36,11 +35,11 @@ public class LoginViewModel extends BaseViewModel {
      */
     public void login(Context context) {
         if (TextUtils.isEmpty(username.get())) {
-            ToastUtils.showShort("用户名不能为空！");
+            showToast("用户名不能为空！");
             return;
         }
         if (TextUtils.isEmpty(password.get())) {
-            ToastUtils.showShort("密码不能为空！");
+            showToast("密码不能为空！");
             return;
         }
         showLoadingDialog();

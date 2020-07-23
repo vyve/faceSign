@@ -2,15 +2,20 @@ package com.cin.facesign.viewmodel;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
+import androidx.lifecycle.MutableLiveData;
 
+import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.baidu.aip.asrwakeup3.core.mini.AutoCheck;
 import com.baidu.aip.asrwakeup3.core.recog.MyRecognizer;
+import com.baidu.aip.face.FaceFilter;
 import com.baidu.ocr.sdk.OCR;
 import com.baidu.ocr.sdk.OnResultListener;
 import com.baidu.ocr.sdk.exception.OCRError;
@@ -18,11 +23,23 @@ import com.baidu.ocr.sdk.model.AccessToken;
 import com.baidu.ocr.ui.camera.CameraNativeHelper;
 import com.baidu.ocr.ui.camera.CameraView;
 import com.baidu.speech.asr.SpeechConstant;
+import com.blankj.utilcode.util.ImageUtils;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.SPUtils;
+import com.cin.facesign.Constant;
 import com.cin.facesign.R;
 import com.cin.facesign.bean.FaceSignProgressBean;
+import com.cin.facesign.utils.FileUtils;
+import com.cin.facesign.utils.oss.UploadHelper;
 import com.cin.mylibrary.base.BaseViewModel;
+import com.cin.mylibrary.bean.BaseResponseBean;
+import com.cin.mylibrary.bean.CheckFaceInfoResultBean;
+import com.cin.mylibrary.http.FilterSubscriber;
+import com.cin.mylibrary.http.RetrofitHelper;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,6 +53,10 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
 
     public ObservableField<List<String>> voiceText = new ObservableField<>();
     public ObservableField<Boolean> ocrAccess = new ObservableField<>();
+    /**
+     * 人脸和身份证是否认证通过
+     */
+    public MutableLiveData<Boolean> faceIdentifyAccess = new MutableLiveData<>();
     public ObservableField<List<FaceSignProgressBean>> progressData = new ObservableField<>();
     private String[] progressContents = new String[]{"身份验证", "产品及条款介绍", "信息询问", "电子文档展示", "客户签名"};
 
@@ -48,6 +69,65 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
         texts.add(getApplication().getResources().getString(R.string.face_sign_voice_text4));
         texts.add(getApplication().getResources().getString(R.string.face_sign_voice_text5));
         voiceText.set(texts);
+    }
+
+    /**
+     * 上传识别的人脸
+     */
+    public void uploadHeadImg(Context context){
+        UploadHelper.upload(context, SPUtils.getInstance().getInt(Constant.userId) + "_identifyHeadImg", Constant.FACE_PATH,
+                new UploadHelper.UploadListener() {
+                    @Override
+                    public void onSuccess(String url) {
+                        LogUtils.i("人脸上传成功,"+url);
+                        uploadIDCardImg(context,url);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        showToast(msg);
+                        faceIdentifyAccess.postValue(false);
+                    }
+                });
+    }
+
+    /**
+     * 上传识别出的身份证
+     */
+    private void uploadIDCardImg(Context context,String faceImgUrl){
+        UploadHelper.upload(context, SPUtils.getInstance().getInt(Constant.userId) + "_identifyIDCardImg", Constant.ID_CARD_PATH,
+                new UploadHelper.UploadListener() {
+                    @Override
+                    public void onSuccess(String url) {
+                        LogUtils.i("身份证上传成功,"+url);
+                        compareFaceInfo(context,faceImgUrl,url);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        showToast(msg);
+                        faceIdentifyAccess.postValue(false);
+                    }
+                });
+    }
+
+    /**
+     * 校对人脸信息和身份证信息
+     */
+    private void  compareFaceInfo(Context context,String faceImgUrl,String idCardImgUrl){
+        RetrofitHelper.getInstance().checkFaceInfo(faceImgUrl,idCardImgUrl,new FilterSubscriber<BaseResponseBean<CheckFaceInfoResultBean>>(context){
+            @Override
+            public void onNext(BaseResponseBean<CheckFaceInfoResultBean> checkFaceInfoResultBeanBaseResponseBean) {
+                super.onNext(checkFaceInfoResultBeanBaseResponseBean);
+                faceIdentifyAccess.postValue(true);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+                showToast(error);
+            }
+        });
     }
 
     /**
@@ -122,6 +202,9 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
         recognizer.start(params);
     }
 
+    /**
+     * 初始化列表数据
+     */
     public void initProgressRecyclerView() {
         List<FaceSignProgressBean> list = new ArrayList<>();
         for (int i = 0; i < progressContents.length; i++) {
@@ -134,5 +217,45 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
             list.add(bean);
         }
         progressData.set(list);
+    }
+
+    /**
+     * 保存图片
+     */
+    public void saveFaceBmp(FaceFilter.TrackedModel model) {
+        String filePath = Constant.FACE_PATH;
+        final Bitmap face = model.cropFace();
+        if (face != null) {
+            ImageUtils.save(face, filePath, Bitmap.CompressFormat.JPEG);
+        }
+        File path = new File(filePath);
+        if (!path.exists()) {
+            filePath = "";
+        }
+        final File file = new File(filePath);
+        boolean saved = false;
+        try {
+            byte[] buf = FileUtils.readFile(file);
+            if (buf.length > 0) {
+                saved = true;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+       LogUtils.i("aaaa,头像保存成功");
+    }
+
+    public void saveIdCard(Bitmap bitmap){
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(Constant.ID_CARD_PATH);
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+            bitmap.recycle();
+            fileOutputStream.close();
+
+            LogUtils.i("aaaa,idCard保存成功");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 }

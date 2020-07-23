@@ -12,8 +12,19 @@ public class Constant {
      * 注册时缓存的头像路径
      */
     public static final String FACE_IDENTIFY_LOCAL_PATH = FILE_SAVE_PATH + "head_tmp.jpg";
+    /**
+     * 在线面签保存的识别的头像路径
+     */
+    public static final String FACE_PATH = FILE_SAVE_PATH + "face_head.jpg";
+    /**
+     * 识别到的身份证保存路径
+     */
+    public static final String ID_CARD_PATH = FILE_SAVE_PATH + "face_id_card.jpg";
 
-    public static final String VIDEO_RECORD_PATH = FILE_SAVE_PATH + "recordVideo.mp4";
+    /**
+     * 屏幕录制保存的路径
+     */
+    public static final String VIDEO_RECORD_PATH = FILE_SAVE_PATH + "screenRecord.mp4";
 
     /**
      * 签名文件保存路径
@@ -34,4 +45,8 @@ public class Constant {
      * String
      */
     public static final String username = "username";
+
+    public static final String ossAccessKeyId = "ossAccessKeyId";
+    public static final String ossAccessKeySecret = "ossAccessKeySecret";
+    public static final String ossSecurityToken = "ossSecurityToken";
 }

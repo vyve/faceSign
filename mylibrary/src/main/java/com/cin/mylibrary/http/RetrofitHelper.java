@@ -2,9 +2,13 @@ package com.cin.mylibrary.http;
 
 import com.blankj.utilcode.util.SPUtils;
 import com.cin.mylibrary.AppConstant;
+import com.cin.mylibrary.bean.CheckFaceInfoResultBean;
 import com.cin.mylibrary.bean.InsuranceBean;
+import com.cin.mylibrary.bean.OssConfigBean;
 import com.cin.mylibrary.bean.UserBean;
 import com.cin.mylibrary.request_bean.BaseRequestBean;
+import com.cin.mylibrary.request_bean.CheckFaceInfoRequestBean;
+import com.cin.mylibrary.request_bean.CompleteOnlineIdentifyRequestBean;
 import com.cin.mylibrary.request_bean.LoginRequestBean;
 import com.cin.mylibrary.request_bean.RegisterFaceBean;
 import com.cin.mylibrary.bean.BaseResponseBean;
@@ -114,6 +118,37 @@ public class RetrofitHelper {
      */
     public void getUserInsurances(Integer userId,Subscriber<BaseResponseBean> subscriber){
         RetrofitUtil.getInstance().getAppService().getUserInsurances(new BaseRequestBean(),userId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+
+    /**
+     * 提交在线认证数据
+     */
+    public void completeOnlineIdentify(Integer userId,Integer insuranceId,CompleteOnlineIdentifyRequestBean bean,Subscriber<BaseResponseBean> subscriber){
+        RetrofitUtil.getInstance().getAppService().completeOnlineIdentify(bean,userId,insuranceId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+    /**
+     * 人脸信息对比
+     */
+    public void checkFaceInfo(String faceImgUrl,String idCardImgUrl, Subscriber<BaseResponseBean<CheckFaceInfoResultBean>> subscriber){
+        CheckFaceInfoRequestBean bean = new CheckFaceInfoRequestBean();
+        bean.setIdCardImage(idCardImgUrl);
+        bean.setImage(faceImgUrl);
+        RetrofitUtil.getInstance().getAppService().checkFaceInfo(bean)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(subscriber);
+    }
+    /**
+     * OSS Config 信息
+     */
+    public void getOSSConfig(Subscriber<BaseResponseBean<OssConfigBean>> subscriber){
+        RetrofitUtil.getInstance().getAppService().getOSSConfig()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);

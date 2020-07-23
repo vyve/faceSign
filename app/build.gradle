@@ -77,4 +77,6 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.12'
 
     implementation 'com.tencent.bugly:crashreport:2.8.6'
+    //阿里云oss 上传文件
+    implementation 'com.aliyun.dpa:oss-android-sdk:+'
 }

@@ -1,9 +1,13 @@
 package com.cin.mylibrary.http;
 
+import com.cin.mylibrary.bean.CheckFaceInfoResultBean;
 import com.cin.mylibrary.bean.InsuranceBean;
+import com.cin.mylibrary.bean.OssConfigBean;
 import com.cin.mylibrary.bean.UserBean;
 import com.cin.mylibrary.request_bean.BaseRequestBean;
 import com.cin.mylibrary.bean.BaseResponseBean;
+import com.cin.mylibrary.request_bean.CheckFaceInfoRequestBean;
+import com.cin.mylibrary.request_bean.CompleteOnlineIdentifyRequestBean;
 import com.cin.mylibrary.request_bean.LoginRequestBean;
 import com.cin.mylibrary.request_bean.RegisterRequestBean;
 
@@ -36,4 +40,14 @@ public interface AppRetrofitService {
 
     @POST("user/insurances")
     Observable<BaseResponseBean> getUserInsurances(@Body BaseRequestBean bean,@Query("userId")Integer userId);
+
+    @POST("user/newUserInsurance")
+    Observable<BaseResponseBean> completeOnlineIdentify(@Body CompleteOnlineIdentifyRequestBean bean,
+                                                        @Query("userId")Integer userId,@Query("insuranceId") Integer insuranceId);
+
+    @POST("face/check")
+    Observable<BaseResponseBean<CheckFaceInfoResultBean>> checkFaceInfo(@Body CheckFaceInfoRequestBean bean);
+
+    @POST("oss/token")
+    Observable<BaseResponseBean<OssConfigBean>> getOSSConfig();
 }
