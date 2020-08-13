@@ -47,9 +47,9 @@ public class CameraImageSource extends ImageSource {
         cameraControl.setCameraFacing(cameraFaceType);
         cameraControl.setOnFrameListener(new ICameraControl.OnFrameListener<byte[]>() {
             @Override
-            public void onPreviewFrame(byte[] data, int rotation, int width, int height,boolean faceIdentify) {
-                int width1 = width;
-                int height1 = height;
+            public void onPreviewFrame(byte[] data, int rotation, int faceWidth, int faceHeight,int ocrWidth,int ocrHeight,boolean faceIdentify) {
+                int width1 = faceWidth;
+                int height1 = faceHeight;
                 int[] argb = argbPool.acquire(width1, height1);
 
                 if (argb == null || argb.length != width1 * height1) {
@@ -75,8 +75,8 @@ public class CameraImageSource extends ImageSource {
                 frame.setPool(argbPool);
                 ImageFrame.OCRFrame ocrFrame = new ImageFrame.OCRFrame();
                 ocrFrame.setData(data);
-                ocrFrame.setOptHeight(height);
-                ocrFrame.setOptWidth(width);
+                ocrFrame.setOptHeight(ocrHeight);
+                ocrFrame.setOptWidth(ocrWidth);
                 ocrFrame.setRotation(rotation);
                 frame.setOcrFrame(ocrFrame);
                 ArrayList<OnFrameAvailableListener> listeners = getListeners();

@@ -45,7 +45,7 @@ public class RecordVideo2 {
         this.context = context;
         this.textureView = textureView;
 
-        textureView.setAspectRatio(textureView.getWidth(), textureView.getHeight());
+//        textureView.setAspectRatio(textureView.getWidth(), textureView.getHeight());
     }
 
     public void setCamera(Camera camera, PreviewView previewView,Camera.Size optSize,Camera.PreviewCallback previewCallback) {

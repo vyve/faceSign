@@ -7,9 +7,12 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -71,14 +74,27 @@ public class FaceIdentifyActivity extends BaseActivity<ActivityFaceIdentifyBindi
     private InnerHandler mHandler;
 
     public static void startActivityForResult(FragmentActivity activity, int code) {
+
         PermissionX.init(activity).permissions(Manifest.permission.CAMERA)
                 .request((allGranted, grantedList, deniedList) -> {
-            if (allGranted){
-                activity.startActivityForResult(new Intent(activity, FaceIdentifyActivity.class),code);
-            }else {
-                ToastUtils.showShort("权限被拒绝，无法使用该功能！");
-            }
-        });
+                    if (allGranted) {
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!Settings.System.canWrite(activity)) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                intent.setData(Uri.parse("package:" + activity.getPackageName()));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                activity.startActivity(intent);
+                            }else {
+                                activity.startActivityForResult(new Intent(activity, FaceIdentifyActivity.class), code);
+                            }
+                        } else {
+                            activity.startActivityForResult(new Intent(activity, FaceIdentifyActivity.class), code);
+                        }
+                    } else {
+                        ToastUtils.showShort("权限被拒绝，无法使用该功能！");
+                    }
+                });
     }
 
     @Override
@@ -98,7 +114,7 @@ public class FaceIdentifyActivity extends BaseActivity<ActivityFaceIdentifyBindi
         mScreenWidth = ScreenUtils.getScreenWidth();
         mScreenHeight = ScreenUtils.getScreenHeight();
 
-        CameraImageSource cameraImageSource = new CameraImageSource(this,true);
+        CameraImageSource cameraImageSource = new CameraImageSource(this, true);
         cameraImageSource.setPreviewView(binding.faceIdentifyPreviewView);
         faceDetectManager.setImageSource(cameraImageSource);
 
@@ -112,7 +128,7 @@ public class FaceIdentifyActivity extends BaseActivity<ActivityFaceIdentifyBindi
                 if (trackedModel.meetCriteria() && mGoodDetect) {
                     mGoodDetect = false;
                     Boolean aBoolean = viewModel.mSavedBitmap.get();
-                    if (aBoolean!=null) {
+                    if (aBoolean != null) {
                         if (!aBoolean && mBeginDetect) {
                             if (viewModel.saveFaceBmp(trackedModel)) {
                                 setResult(RESULT_OK);

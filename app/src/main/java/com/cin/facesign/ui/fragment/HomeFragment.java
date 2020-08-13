@@ -63,7 +63,9 @@ public class HomeFragment extends BaseFragment<FragmentHomeBindingImpl, HomeView
             }
             //远程面签
             if (view.getId()==R.id.faceSign){
-                OnlineFaceSignActivity.startActivity(mActivity,hotProductAdapter.getItem(position).getId());
+                if (todoAdapter.getItem(position)!=null) {
+                    OnlineFaceSignActivity.startActivity(mActivity, 1);
+                }
             }
         });
 

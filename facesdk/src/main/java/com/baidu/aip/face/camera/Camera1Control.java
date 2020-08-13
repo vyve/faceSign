@@ -3,6 +3,7 @@
  */
 package com.baidu.aip.face.camera;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -17,8 +18,10 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
 import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
 import android.util.SparseIntArray;
@@ -167,8 +170,8 @@ public class Camera1Control implements ICameraControl {
 
     private Camera.PreviewCallback previewCallback = new Camera.PreviewCallback() {
         @Override
-        public void onPreviewFrame(byte[] data, Camera camera) {
-            Camera.Size size = camera.getParameters().getPreviewSize();
+        public void onPreviewFrame(final byte[] data, Camera camera) {
+            final Camera.Size size = camera.getParameters().getPreviewSize();
 
             int rotation = getSurfaceOrientation();
             if (cameraFacing == ICameraControl.CAMERA_FACING_FRONT) {
@@ -180,17 +183,79 @@ public class Camera1Control implements ICameraControl {
                 }
             }
 
-            if (rotation % 180 == 90) {
-                previewView.setPreviewSize(size.height, size.width);
-            } else {
-                previewView.setPreviewSize(size.width, size.height);
+//            if (rotation % 180 == 90) {
+//                previewView.setPreviewSize(size.height, size.width);
+//            } else {
+//                previewView.setPreviewSize(size.width, size.height);
+//            }
+
+            // 在某些机型和某项项目中，某些帧的data的数据不符合nv21的格式，需要过滤，否则后续处理会导致crash
+//            if (data.length != parameters.getPreviewSize().width * parameters.getPreviewSize().height * 1.5) {
+//                return;
+//            }
+
+            final int finalRotation = rotation;
+            CameraThreadPool.execute(new Runnable() {
+                @Override
+                public void run() {
+//                    onFrameListener.onPreviewFrame(data, finalRotation, size.width, size.height, optSize.width, optSize.height, previewView.getIdentifyType() == 0);
+                    onFrameListener.onPreviewFrame(data, finalRotation, size.width, size.height, size.width, size.height, previewView.getIdentifyType() == 0);
+
+                }
+            });
+            //人脸识别
+            if (previewView.getIdentifyType() == 1) {
+                CameraThreadPool.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        onRequestDetect(data);
+                    }
+                });
             }
 
-//                        onFrameListener.onPreviewFrame(data, rotation, size.width, size.height);
-            onFrameListener.onPreviewFrame(data, rotation, size.width, size.height, previewView.getIdentifyType() == 0);
-//            onFrameListener.onPreviewFrame(data, rotation, optSize.width, optSize.height, previewView.getIdentifyType() == 0);
         }
     };
+
+    private OnIdentityOcrListener ocrIdentityListener;
+
+    public interface OnIdentityOcrListener {
+        void onDetect(byte[] jpeg, int orientation);
+    }
+
+    /**
+     * ocr识别成功监听
+     */
+    public void setOnOcrPreviewFrameListener(OnIdentityOcrListener ocrIdentityListener) {
+        this.ocrIdentityListener = ocrIdentityListener;
+    }
+
+    private void onRequestDetect(byte[] data) {
+        // 相机已经关闭
+        if (camera == null || data == null || optSize == null) {
+            return;
+        }
+
+        YuvImage img = new YuvImage(data, ImageFormat.NV21, optSize.width, optSize.height, null);
+        ByteArrayOutputStream os = null;
+        try {
+            os = new ByteArrayOutputStream(data.length);
+            img.compressToJpeg(new Rect(0, 0, optSize.width, optSize.height), 80, os);
+            byte[] jpeg = os.toByteArray();
+            if (ocrIdentityListener!=null) {
+                ocrIdentityListener.onDetect(jpeg, getSurfaceOrientation());
+            }
+        } catch (OutOfMemoryError e) {
+            // 内存溢出则取消当次操作
+        } finally {
+            try {
+                os.close();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 
     private AutoFitTextureView textureView;
 
@@ -371,7 +436,7 @@ public class Camera1Control implements ICameraControl {
             if (register) {
                 camera.startPreview();
             } else {
-                mRecordVideo.setCamera(camera, previewView, optSize,previewCallback);
+                mRecordVideo.setCamera(camera, previewView, optSize, previewCallback);
                 mRecordVideo.startRecord();
             }
 
@@ -381,6 +446,8 @@ public class Camera1Control implements ICameraControl {
     private Camera.Size getOptimalSize(List<Camera.Size> sizes) {
         int width = textureView.getWidth();
         int height = textureView.getHeight();
+//        int width = previewView.getWidth();
+//        int height = previewView.getHeight();
 
         Camera.Size pictureSize = sizes.get(0);
 

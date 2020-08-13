@@ -18,7 +18,7 @@ import androidx.annotation.IntDef;
 public interface ICameraControl<T> {
 
     interface OnFrameListener<T> {
-        void onPreviewFrame(T data, int rotation, int width, int height,boolean faceIdentify);
+        void onPreviewFrame(T data, int rotation, int faceWidth, int faceHeight,int ocrWidth,int ocrHeight,boolean faceIdentify);
     }
 
     /**

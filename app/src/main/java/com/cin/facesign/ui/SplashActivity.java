@@ -47,7 +47,7 @@ public class SplashActivity extends BaseActivity<ActivitySplashBinding, SplashVi
 
     @Override
     public void init() {
-        mHandler.sendEmptyMessageDelayed(1, 2000);
+        mHandler.sendEmptyMessageDelayed(1, 1000);
     }
 
     @Override

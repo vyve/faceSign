@@ -37,7 +37,6 @@ public interface PreviewView {
 
     AutoFitTextureView getTextureView();
 
-    void setAspectRatio(int width, int height);
 
     /**
      * 设置帧大小。

@@ -15,6 +15,11 @@ import com.cin.facesign.ui.LoginActivity;
 import com.cin.facesign.utils.oss.UploadHelper;
 import com.cin.facesign.viewmodel.PersonalViewModel;
 import com.cin.mylibrary.base.BaseFragment;
+import com.cin.mylibrary.http.FilterSubscriber;
+import com.cin.mylibrary.http.RetrofitUtil;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * 个人设置
@@ -64,6 +69,21 @@ public class PersonalFragment extends BaseFragment<FragmentPersonalBinding, Pers
         public void onChangeFaceClick() {
             showToast("人脸信息变更");
 
+            RetrofitUtil.getInstance().getTestSDKService().getSDKToken("44","en-gb","6","1")
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new FilterSubscriber<Object>(mActivity){
+                        @Override
+                        public void onNext(Object o) {
+                            super.onNext(o);
+
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            super.onError(e);
+                        }
+                    });
         }
     }
 }

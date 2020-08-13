@@ -19,6 +19,7 @@ import androidx.annotation.Nullable;
 
 import com.baidu.aip.face.PreviewView;
 import com.baidu.aip.face.camera.AutoFitTextureView;
+import com.baidu.ocr.ui.camera.OCRMaskView;
 import com.baidu.ocr.ui.camera.MaskView;
 import com.cin.facesign.R;
 
@@ -42,13 +43,14 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
     private int identifyType = 0;
     private int mRatioWidth = 0;
     private int mRatioHeight = 0;
+//    private OCRMaskView ocrMaskView;
 
     public TexturePreviewView(@NonNull Context context) {
-        this(context,null);
+        this(context, null);
     }
 
     public TexturePreviewView(@NonNull Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs,0);
+        this(context, attrs, 0);
     }
 
     public TexturePreviewView(@NonNull Context context, @Nullable AttributeSet attrs, @AttrRes int defStyleAttr) {
@@ -63,28 +65,26 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
 
     private void init(int type) {
 
-
         textureView = new AutoFitTextureView(getContext());
         addView(textureView);
 
-        if (type==1){
+        if (type == 1) {
             maskView = new MaskView(getContext());
             addView(maskView);
+//            ocrMaskView =new OCRMaskView(getContext());
+//            addView(ocrMaskView);
         }
 
     }
 
-    /**
-     * 识别类型
-     * @param identifyType 0 人脸识别
-     */
-    public void setIdentifyType(int identifyType){
-        this.identifyType = identifyType;
-    }
 
     @Override
-    public int getIdentifyType(){
+    public int getIdentifyType() {
         return identifyType;
+    }
+
+    public void setIdentifyType(int identifyType) {
+        this.identifyType = identifyType;
     }
 
     @Override
@@ -92,46 +92,13 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
         return previewFrame;
     }
 
-    /**
-     * 有些ImageSource如系统相机前置设置头为镜面效果。这样换算坐标的时候会不一样
-     * @param mirrored 是否为镜面效果。
-     */
-    public void setMirrored(boolean mirrored) {
-        this.mirrored = mirrored;
-    }
-
-    /**
-     * Sets the aspect ratio for this view. The size of the view will be measured based on the ratio
-     * calculated from the parameters. Note that the actual sizes of parameters don't matter, that
-     * is, calling setAspectRatio(2, 3) and setAspectRatio(4, 6) make the same result.
-     *
-     * @param width  Relative horizontal size
-     * @param height Relative vertical size
-     */
-    @Override
-    public void setAspectRatio(int width, int height) {
-        if (width < 0 || height < 0) {
-            throw new IllegalArgumentException("Size cannot be negative.");
-        }
-        mRatioWidth = width;
-        mRatioHeight = height;
-        requestLayout();
-    }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         int width = MeasureSpec.getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
-        if (0 == mRatioWidth || 0 == mRatioHeight) {
-            setMeasuredDimension(width, height);
-        } else {
-            if (width < height * mRatioWidth / mRatioHeight) {
-                setMeasuredDimension(width, width * mRatioHeight / mRatioWidth);
-            } else {
-                setMeasuredDimension(height * mRatioWidth / mRatioHeight, height);
-            }
-        }
+        setMeasuredDimension(width, width*4/3);
     }
 
 
@@ -140,11 +107,14 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
         super.onLayout(changed, left, top, right, bottom);
         previewFrame.left = left;
         previewFrame.top = 0;
-        previewFrame.bottom = bottom-top;
+        previewFrame.bottom = bottom - top;
         previewFrame.right = right;
-        if (maskView!=null) {
+        if (maskView != null) {
             maskView.layout(left, 0, right, bottom - top);
         }
+//        if (ocrMaskView != null) {
+//            ocrMaskView.layout(left, 0, right, bottom - top);
+//        }
         int selfWidth = getWidth();
         int selfHeight = getHeight();
         if (videoWidth == 0 || videoHeight == 0 || selfWidth == 0 || selfHeight == 0) {
@@ -170,15 +140,23 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
     /**
      * 获取人脸识别实际区域
      */
-    public RectF getFaceIdentifyRectF(){
+    public RectF getFaceIdentifyRectF() {
         return maskView.getFaceIdentifyRectF();
     }
 
-    public RectF getOCRIdentifyRect(){
+//    public Rect getOCRFrameRect() {
+//        return ocrMaskView.getFrameRect();
+//    }
+
+    public RectF getOCRIdentifyRect() {
+//        return ocrMaskView.getIdCardIdentifyRect();
         return maskView.getIdCardIdentifyRect();
     }
 
-    public MaskView getMaskView(){
+//    public OCRMaskView getOCRMaskView() {
+//        return ocrMaskView;
+//    }
+    public MaskView getMaskView() {
         return maskView;
     }
 
@@ -275,7 +253,7 @@ public class TexturePreviewView extends FrameLayout implements PreviewView {
         Matrix matrix = new Matrix();
         float ratio = 1.0f * selfWidth / videoWidth;
         matrix.postScale(ratio, ratio);
-      //  matrix.postTranslate(0, 0);
+        //  matrix.postTranslate(0, 0);
         matrix.mapRect(rectF);
 
         if (mirrored) {

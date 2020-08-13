@@ -213,9 +213,9 @@ public class FaceDetectManager {
 //         value = FaceSDKManager.getInstance().detect(frame.getArgb(), frame.getWidth(), frame.getHeight());
         FaceInfo[] faces = FaceSDKManager.getInstance().getFaceTracker(mContext).get_TrackedFaceInfo();
 
-        if (value == 0||isOCR) {
+//        if (value == 0||isOCR) {
             faceFilter.filter(faces, frame,isOCR);
-        }
+//        }
         if (listener != null) {
             listener.onDetectFace(value, faces, frame);
         }

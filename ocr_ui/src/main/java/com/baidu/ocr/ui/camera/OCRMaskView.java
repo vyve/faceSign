@@ -3,11 +3,6 @@
  */
 package com.baidu.ocr.ui.camera;
 
-import java.io.File;
-
-import com.baidu.ocr.ui.R;
-import com.baidu.ocr.ui.camera.CameraView;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,15 +21,18 @@ import androidx.annotation.IntDef;
 import androidx.annotation.RequiresApi;
 import androidx.core.content.res.ResourcesCompat;
 
+import com.baidu.ocr.ui.R;
+
+import java.io.File;
+
 @SuppressWarnings("unused")
-public class MaskView extends View {
+public class OCRMaskView extends View {
 
     public static final int MASK_TYPE_NONE = 0;
     public static final int MASK_TYPE_ID_CARD_FRONT = 1;
     public static final int MASK_TYPE_ID_CARD_BACK = 2;
     public static final int MASK_TYPE_BANK_CARD = 11;
     public static final int MASK_TYPE_PASSPORT = 21;
-    private Drawable faceOutlineDrawable;
 
     @IntDef({MASK_TYPE_NONE, MASK_TYPE_ID_CARD_FRONT, MASK_TYPE_ID_CARD_BACK, MASK_TYPE_BANK_CARD,
             MASK_TYPE_PASSPORT})
@@ -60,7 +58,6 @@ public class MaskView extends View {
     private Paint pen = new Paint(Paint.ANTI_ALIAS_FLAG);
 
     private Rect frame = new Rect();
-    private Rect faceOutlineFrame = new Rect();
 
     private Rect framePassport = new Rect();
 
@@ -79,57 +76,13 @@ public class MaskView extends View {
 
     public Rect getFrameRectExtend() {
         Rect rc = new Rect(frame);
-        int widthExtend = (int) ((frame.right - frame.left) * 0.2f);
-        int heightExtend = (int) ((frame.bottom - frame.top) * 0.2f);
+        int widthExtend = (int) ((frame.right - frame.left) * 0.02f);
+        int heightExtend = (int) ((frame.bottom - frame.top) * 0.02f);
         rc.left -= widthExtend;
         rc.right += widthExtend;
         rc.top -= heightExtend;
         rc.bottom += heightExtend;
         return rc;
-    }
-
-    public void setMaskType(@MaskType int maskType) {
-        this.maskType = maskType;
-        invalidate();
-    }
-
-    public int getMaskType() {
-        return maskType;
-    }
-
-    public void setOrientation(@CameraView.Orientation int orientation) {
-    }
-
-    public MaskView(Context context) {
-        super(context);
-        init();
-    }
-
-    public MaskView(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        init();
-    }
-
-    public MaskView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
-        init();
-    }
-
-    private void init() {
-        locatorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.bd_ocr_id_card_locator_front, null);
-        faceOutlineDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.bd_ocr_id_card_locator_front, null);
-    }
-
-    /**
-     * 获取人脸识别区域
-     */
-    public RectF getFaceIdentifyRectF() {
-        RectF rectF = new RectF();
-        rectF.left = faceOutlineFrame.left;
-        rectF.top = faceOutlineFrame.top;
-        rectF.right = faceOutlineFrame.right;
-        rectF.bottom = faceOutlineFrame.top+getHeight();
-        return rectF;
     }
 
     /**
@@ -145,19 +98,73 @@ public class MaskView extends View {
         return rectF;
     }
 
+    public void setMaskType(@MaskType int maskType) {
+        this.maskType = maskType;
+        switch (maskType) {
+            case MASK_TYPE_ID_CARD_FRONT:
+                locatorDrawable = ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.bd_ocr_id_card_locator_front, null);
+                break;
+            case MASK_TYPE_ID_CARD_BACK:
+                locatorDrawable = ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.bd_ocr_id_card_locator_back, null);
+                break;
+            case MASK_TYPE_PASSPORT:
+                locatorDrawable = ResourcesCompat.getDrawable(getResources(),
+                        R.drawable.bd_ocr_passport_locator, null);
+                break;
+            case MASK_TYPE_BANK_CARD:
+                break;
+            case MASK_TYPE_NONE:
+            default:
+                break;
+        }
+        invalidate();
+    }
+
+    public int getMaskType() {
+        return maskType;
+    }
+
+    public void setOrientation(@CameraView.Orientation int orientation) {
+    }
+
+    public OCRMaskView(Context context) {
+        super(context);
+        init();
+    }
+
+    public OCRMaskView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
+
+    public OCRMaskView(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        init();
+    }
+
+    private void init() {
+        locatorDrawable = ResourcesCompat.getDrawable(getResources(), R.drawable.bd_ocr_id_card_locator_front, null);
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
         if (w > 0 && h > 0) {
             if (maskType != MASK_TYPE_PASSPORT) {
 //                float ratio = h > w ? 0.9f : 0.72f;
-                float ratio = 0.5f;
+                float ratio = 0.7f;
 
                 int width = (int) (w * ratio);
                 int height = width * 400 / 620;
 
+//                int left = (w - width) / 2;
+//                int top = (h - height) / 2;
+//                int right = width + left;
+//                int bottom = height + top;
                 int left = (w - width) / 2;
-                int top = h/2+(h/2 - height) / 2+100;
+                int top = h/2+(h/2 - height) / 2;
 //                int top = (h - height) / 2;
                 int right = width + left;
                 int bottom = height + top;
@@ -166,11 +173,6 @@ public class MaskView extends View {
                 frame.top = top;
                 frame.right = right;
                 frame.bottom = bottom;
-
-                faceOutlineFrame.left = 0;
-                faceOutlineFrame.top = h - w * 366 / 362;
-                faceOutlineFrame.right = w;
-                faceOutlineFrame.bottom = h;
             } else {
                 float ratio = 0.9f;
 
@@ -218,15 +220,18 @@ public class MaskView extends View {
                     (int) (top + (110f / 632) * height),
                     (int) (left + (963f / 1006) * width),
                     (int) (top + (476f / 632) * height));
-            faceOutlineDrawable.setBounds(
-                    (int) (faceOutlineFrame.left),
-                    (int) (faceOutlineFrame.top),
-                    (int) (faceOutlineFrame.right),
-                    (int) (faceOutlineFrame.bottom));
-        }
-
-        if (faceOutlineDrawable != null) {
-            faceOutlineDrawable.draw(canvas);
+        } else if (maskType == MASK_TYPE_ID_CARD_BACK) {
+            locatorDrawable.setBounds(
+                    (int) (left + 51f / 1006 * width),
+                    (int) (top + (48f / 632) * height),
+                    (int) (left + (250f / 1006) * width),
+                    (int) (top + (262f / 632) * height));
+        } else if (maskType == MASK_TYPE_PASSPORT) {
+            locatorDrawable.setBounds(
+                    (int) (left + 30f / 1006 * width),
+                    (int) (top + (20f / 632) * height),
+                    (int) (left + (303f / 1006) * width),
+                    (int) (top + (416f / 632) * height));
         }
         if (locatorDrawable != null) {
             locatorDrawable.draw(canvas);

@@ -153,4 +153,5 @@ public class RetrofitHelper {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(subscriber);
     }
+
 }

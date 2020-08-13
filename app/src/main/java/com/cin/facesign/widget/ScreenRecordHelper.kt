@@ -20,6 +20,7 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.blankj.utilcode.constant.PermissionConstants
 import com.blankj.utilcode.util.PermissionUtils
+import com.cin.facesign.bean.eventbus.ScreenRecordPassEvent
 import com.cin.facesign.bean.eventbus.ScreenRecordRefusedEvent
 import org.greenrobot.eventbus.EventBus
 import java.io.File
@@ -103,6 +104,7 @@ class ScreenRecordHelper @JvmOverloads constructor(
                             isRecording = true
                             mediaRecorder?.start()
                             listener?.onStartRecord()
+                            EventBus.getDefault().post(ScreenRecordPassEvent())
                         } else {
                             showToast("抱歉，你的手机暂不支持录屏")
 

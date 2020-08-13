@@ -5,23 +5,24 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.RectF;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.view.Gravity;
-import android.view.View;
 import android.view.ViewTreeObserver;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
-import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.baidu.aip.asrwakeup3.core.recog.MyRecognizer;
 import com.baidu.aip.asrwakeup3.core.recog.listener.ChainRecogListener;
 import com.baidu.aip.asrwakeup3.core.recog.listener.MessageStatusRecogListener;
+import com.baidu.aip.face.camera.Camera1Control;
 import com.baidu.aip.face.camera.CameraImageSource;
 import com.baidu.aip.face.DetectRegionProcessor;
 import com.baidu.aip.face.FaceDetectManager;
@@ -31,6 +32,7 @@ import com.blankj.utilcode.util.ToastUtils;
 import com.chad.library.BR;
 import com.cin.facesign.Constant;
 import com.cin.facesign.R;
+import com.cin.facesign.bean.eventbus.ScreenRecordPassEvent;
 import com.cin.facesign.bean.eventbus.ScreenRecordRefusedEvent;
 import com.cin.facesign.bean.eventbus.SignatureFinishEvent;
 import com.cin.facesign.control.FaceSignSynthesizer;
@@ -69,7 +71,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
      */
     private int insuranceId;
 
-    public static void startActivity(FragmentActivity activity,int insuranceId) {
+    public static void startActivity(FragmentActivity activity, int insuranceId) {
         PermissionX.init(activity).permissions(
                 Manifest.permission.MODIFY_AUDIO_SETTINGS,
                 Manifest.permission.ACCESS_WIFI_STATE,
@@ -77,9 +79,25 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                 Manifest.permission.RECORD_AUDIO,
                 Manifest.permission.CAMERA).request((allGranted, grantedList, deniedList) -> {
                     if (allGranted) {
-                        Intent intent = new Intent(activity, OnlineFaceSignActivity.class);
-                        intent.putExtra("insuranceId",insuranceId);
-                        activity.startActivity(intent);
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            if (!Settings.System.canWrite(activity)) {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                                intent.setData(Uri.parse("package:" + activity.getPackageName()));
+                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                activity.startActivity(intent);
+                            } else {
+
+                                Intent intent = new Intent(activity, OnlineFaceSignActivity.class);
+                                intent.putExtra("insuranceId", insuranceId);
+                                activity.startActivity(intent);
+                            }
+                        } else {
+
+                            Intent intent = new Intent(activity, OnlineFaceSignActivity.class);
+                            intent.putExtra("insuranceId", insuranceId);
+                            activity.startActivity(intent);
+                        }
                     } else {
                         ToastUtils.showShort("权限被拒绝，无法使用该功能！");
                     }
@@ -124,6 +142,10 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
      */
     private static final int FACE_SIGN_FINISH = 10004;
     /**
+     * 初始化语音合成
+     */
+    private static final int INIT_SYNTHESIZER = 10005;
+    /**
      * 语音识别弹窗
      */
     private static final int ASR_REQUEST = 101;
@@ -161,6 +183,9 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             super.handleMessage(msg);
             int what = msg.what;
             switch (what) {
+                case INIT_SYNTHESIZER:
+                    synthesizer = new FaceSignSynthesizer(OnlineFaceSignActivity.this, mHandler);
+                    break;
                 /*
                  * 初始化语音合成服务是否成功
                  */
@@ -195,18 +220,13 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                     break;
                 case FACE_SIGN_FINISH:
                     needSaveScreenRecord = true;
-                    FaceSignFinishActivity.startActivity(OnlineFaceSignActivity.this,insuranceId);
+                    FaceSignFinishActivity.startActivity(OnlineFaceSignActivity.this, insuranceId);
                     finish();
                     break;
                 case 100:
                     lineUpDialog.dismiss();
                     ApplyAcceptDialog applyAcceptDialog = new ApplyAcceptDialog(OnlineFaceSignActivity.this);
-                    applyAcceptDialog.setOnButton1ClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            finish();
-                        }
-                    });
+                    applyAcceptDialog.setOnButton1ClickListener(v -> finish());
                     applyAcceptDialog.show();
                     break;
                 default:
@@ -227,6 +247,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
 
     @Override
     public void init() {
+
         isAlive = true;
         EventBus.getDefault().register(this);
         mImmersionBar.statusBarDarkFont(false).init();
@@ -239,8 +260,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
         viewModel.initProgressRecyclerView();
         binding.voiceTextContent.setText(getSpeakText());
 
-        synthesizer = new FaceSignSynthesizer(this, mHandler);
-        initASRSpeech();
+        mHandler.sendEmptyMessage(INIT_SYNTHESIZER);
 
         faceDetectManager = new FaceDetectManager(this);
         CameraImageSource cameraImageSource = new CameraImageSource(this, false);
@@ -249,9 +269,6 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
         //添加人脸裁剪器
         faceDetectManager.addPreProcessor(faceCropProcessor);
 //        faceDetectManager.addPreProcessor(ocrCropProcessor);
-
-        //初始化身份证识别
-        viewModel.initOCRAccess();
 
         faceDetectManager.setOnFaceDetectListener((status, infos, frame) -> {
             if (status == 0) {
@@ -269,13 +286,14 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                     faceDetectManager.addPreProcessor(ocrCropProcessor);
                     faceDetectManager.setOCR(true);
                     alreadyAddOCRProcessor = true;
+//                    binding.previewView.setIdentifyType(1);
                     viewModel.saveFaceBmp(trackedModel);
                 }
             } else {
                 Bitmap bitmap = OCRUtil.detect(trackedModel.getFrame().getOcrFrame(),
                         binding.previewView.getMaskView(),
                         binding.previewView);
-                if (bitmap !=null&&!idCardIdentifyFinish) {
+                if (bitmap != null && !idCardIdentifyFinish) {
                     showToast("识别到身份证");
                     idCardIdentifyFinish = true;
                     //保存图像
@@ -286,6 +304,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
 
         });
 
+
         binding.previewView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -293,8 +312,6 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                 binding.previewView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
             }
         });
-        startSynthesizer();
-
         binding.titleBar.setOnTitleClickListener(() -> {
             TurnHumanServiceDialog dialog = new TurnHumanServiceDialog(OnlineFaceSignActivity.this);
             dialog.show();
@@ -308,30 +325,28 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             dialog.setOnButton2ClickListener(v -> showToast("线下面签"));
         });
 
-        viewModel.faceIdentifyAccess.observe(this, new Observer<Boolean>() {
-            @Override
-            public void onChanged(Boolean aBoolean) {
-                if (aBoolean){
-                    //识别成功弹窗
-                    ToastUtils.setGravity(Gravity.CENTER, 0, 0);
-                    ToastUtils.showCustomLong(R.layout.dialog_certification_success);
-                    ToastUtils.setGravity(-1, -1, -1);
-                    currentProgress++;
-                    mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
-                }else {
-                    //识别失败，重新进行识别
-                    alreadyAddOCRProcessor = false;
-                    faceDetectManager.removePreProcessor(ocrCropProcessor);
-                    faceDetectManager.addPreProcessor(faceCropProcessor);
-                    faceDetectManager.setOCR(false);
-                    idCardIdentifyFinish = false;
-                }
+        viewModel.faceIdentifyAccess.observe(this, aBoolean -> {
+            if (aBoolean) {
+                //识别成功弹窗
+                ToastUtils.setGravity(Gravity.CENTER, 0, 0);
+                ToastUtils.showCustomLong(R.layout.dialog_certification_success);
+                ToastUtils.setGravity(-1, -1, -1);
+                currentProgress++;
+                mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
+            } else {
+                //识别失败，重新进行识别
+                alreadyAddOCRProcessor = false;
+                faceDetectManager.removePreProcessor(ocrCropProcessor);
+                faceDetectManager.addPreProcessor(faceCropProcessor);
+                faceDetectManager.setOCR(false);
+                idCardIdentifyFinish = false;
             }
         });
 
         //开始屏幕录制
-        screenRecordHelper = new ScreenRecordHelper(this, null, Constant.FILE_SAVE_PATH,"screenRecord");
+        screenRecordHelper = new ScreenRecordHelper(this, null, Constant.FILE_SAVE_PATH, "screenRecord");
         screenRecordHelper.startRecord();
+
     }
 
     /**
@@ -356,9 +371,27 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
         //设置人脸识别区域
         RectF faceIdentifyRectF = binding.previewView.getFaceIdentifyRectF();
         RectF ocrIdentifyRect = binding.previewView.getOCRIdentifyRect();
+        RectF rectF = new RectF();
+//        rectF.set(0, 0, binding.previewView.getWidth(), binding.previewView.getHeight());
         faceCropProcessor.setDetectedRect(faceIdentifyRectF);
         ocrCropProcessor.setDetectedRect(ocrIdentifyRect);
         faceDetectManager.startFaceIdentify();
+
+        new Camera1Control(this, false).setOnOcrPreviewFrameListener(new Camera1Control.OnIdentityOcrListener() {
+
+            @Override
+            public void onDetect(byte[] jpeg, int orientation) {
+
+//                Bitmap bitmap=OCRUtil.detect2(jpeg,orientation,binding.previewView.getOCRMaskView(),binding.previewView);
+//                if (bitmap !=null&&!idCardIdentifyFinish) {
+//                    showToast("识别到身份证");
+//                    idCardIdentifyFinish = true;
+//                    //保存图像
+//                    viewModel.saveIdCard(bitmap);
+//                    viewModel.uploadHeadImg(OnlineFaceSignActivity.this);
+//                }
+            }
+        });
     }
 
     /**
@@ -367,7 +400,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
     private void startSynthesizer() {
         mHandler.sendEmptyMessageDelayed(START_FACE_IDENTIFY, 1000);
         synthesizer.setListener(() -> {
-            if (currentProgress!=0) {
+            if (currentProgress != 0) {
                 if (currentProgress == 4) {
                     mHandler.sendEmptyMessageDelayed(SHOW_ASR_SPEECH_DIALOG, 500);
                 } else {
@@ -384,9 +417,16 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             //最后一步签名完成
             currentProgress++;
             mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
-        }else if (object instanceof ScreenRecordRefusedEvent){
+        } else if (object instanceof ScreenRecordRefusedEvent) {
             //请求屏幕录制权限被拒绝
             finish();
+        } else if (object instanceof ScreenRecordPassEvent) {
+
+            startSynthesizer();
+            initASRSpeech();
+            //初始化身份证识别
+            viewModel.initOCRAccess();
+
         }
     }
 
@@ -427,11 +467,13 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
     @Override
     protected void onResume() {
         super.onResume();
-        if (mDetectStopped) {
+        if (mDetectStopped && faceDetectManager != null) {
             faceDetectManager.startFaceIdentify();
             mDetectStopped = false;
         }
-        screenRecordHelper.resume();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N && screenRecordHelper != null) {
+            screenRecordHelper.resume();
+        }
         isAlive = true;
     }
 
@@ -446,12 +488,16 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
         if (synthesizer != null) {
             synthesizer.stop();
         }
-        screenRecordHelper.pause();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            screenRecordHelper.pause();
+        }
     }
 
     @Override
     protected void onDestroy() {
-        myRecognizer.release();
+        if (myRecognizer != null) {
+            myRecognizer.release();
+        }
         if (synthesizer != null) {
             synthesizer.release();
         }
