@@ -178,7 +178,7 @@ public class Camera2Control implements ICameraControl {
     @Override
     public void setPreviewView(PreviewView previewView) {
         this.previewView = previewView;
-//        textureView = previewView.getTextureView();
+        textureView = previewView.getTextureView();
         if (surfaceTexture != null) {
             surfaceTexture.detachFromGLContext();
             textureView.setSurfaceTexture(surfaceTexture);
@@ -259,7 +259,7 @@ public class Camera2Control implements ICameraControl {
             new TextureView.SurfaceTextureListener() {
                 @Override
                 public void onSurfaceTextureAvailable(SurfaceTexture texture, int width, int height) {
-                    //                    openCamera(width, height);
+                    openCamera(width, height);
                 }
 
                 @Override

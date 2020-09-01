@@ -3,16 +3,15 @@ package com.cin.facesign.viewmodel;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Message;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.ObservableField;
 import androidx.lifecycle.MutableLiveData;
 
-import com.alibaba.sdk.android.oss.model.PutObjectResult;
 import com.baidu.aip.asrwakeup3.core.mini.AutoCheck;
 import com.baidu.aip.asrwakeup3.core.recog.MyRecognizer;
 import com.baidu.aip.face.FaceFilter;
@@ -51,6 +50,7 @@ import java.util.Map;
 public class OnlineFaceSignViewModel extends BaseViewModel {
     private static final String TAG = "LogOnlineFaceSignViewModel";
 
+    public ObservableField<Integer> insuranceId = new ObservableField<>();
     public ObservableField<List<String>> voiceText = new ObservableField<>();
     public ObservableField<Boolean> ocrAccess = new ObservableField<>();
     /**
@@ -72,15 +72,49 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
     }
 
     /**
+     * 获取需要语音合成的文字
+     */
+    public String getSpeakText(int type) {
+        String text;
+        Resources resources = getApplication().getResources();
+        switch (type) {
+            case 0:
+                text = "您好，这里是中国人保财险北京市分公司远程面签客服小助，下面我们将就保单号为" + insuranceId.get() + "的助贷险保单进行面签确认。";
+                break;
+            case 1:
+                text = resources.getString(R.string.face_sign_voice_text1);
+                break;
+            case 2:
+                text = resources.getString(R.string.face_sign_voice_text2);
+                break;
+            case 3:
+                text = resources.getString(R.string.face_sign_voice_text3);
+                break;
+            case 4:
+                text = resources.getString(R.string.face_sign_voice_text4);
+                break;
+            case 5:
+                text = resources.getString(R.string.face_sign_voice_text5);
+                break;
+            case 10:
+                text = resources.getString(R.string.face_sign_voice_text10);
+                break;
+            default:
+                text = "";
+        }
+        return text;
+    }
+
+    /**
      * 上传识别的人脸
      */
-    public void uploadHeadImg(Context context){
+    public void uploadHeadImg(Context context) {
         UploadHelper.upload(context, SPUtils.getInstance().getInt(Constant.userId) + "_identifyHeadImg", Constant.FACE_PATH,
                 new UploadHelper.UploadListener() {
                     @Override
                     public void onSuccess(String url) {
-                        LogUtils.i("人脸上传成功,"+url);
-                        uploadIDCardImg(context,url);
+                        LogUtils.i("人脸上传成功," + url);
+                        uploadIDCardImg(context, url);
                     }
 
                     @Override
@@ -94,13 +128,13 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
     /**
      * 上传识别出的身份证
      */
-    private void uploadIDCardImg(Context context,String faceImgUrl){
+    private void uploadIDCardImg(Context context, String faceImgUrl) {
         UploadHelper.upload(context, SPUtils.getInstance().getInt(Constant.userId) + "_identifyIDCardImg", Constant.ID_CARD_PATH,
                 new UploadHelper.UploadListener() {
                     @Override
                     public void onSuccess(String url) {
-                        LogUtils.i("身份证上传成功,"+url);
-                        compareFaceInfo(context,faceImgUrl,url);
+                        LogUtils.i(TAG, "身份证上传成功," + url);
+                        compareFaceInfo(context, faceImgUrl, url);
                     }
 
                     @Override
@@ -112,23 +146,53 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
     }
 
     /**
+     * 上传视频帧
+     */
+    public void uploadVideoRecordFrame(Context context, String filePath) {
+        UploadHelper.upload(context, SPUtils.getInstance().getInt(Constant.userId) + "_videoRecordFrameImg", filePath,
+                new UploadHelper.UploadListener() {
+                    @Override
+                    public void onSuccess(String url) {
+                        LogUtils.i(TAG, "视频帧上传成功," + url);
+                        compareFaceInfo(context, url, url);
+                    }
+
+                    @Override
+                    public void onFailure(String msg) {
+                        showToast(msg);
+                        faceIdentifyAccess.postValue(false);
+                        LogUtils.i(TAG, "视频帧上传失败," + msg);
+                    }
+                });
+    }
+
+    /**
      * 校对人脸信息和身份证信息
      */
-    private void  compareFaceInfo(Context context,String faceImgUrl,String idCardImgUrl){
-        RetrofitHelper.getInstance().checkFaceInfo(faceImgUrl,idCardImgUrl,new FilterSubscriber<BaseResponseBean<CheckFaceInfoResultBean>>(context){
+    private void compareFaceInfo(Context context, String faceImgUrl, String idCardImgUrl) {
+        RetrofitHelper.getInstance().checkFaceInfo(faceImgUrl, idCardImgUrl, new FilterSubscriber<BaseResponseBean<CheckFaceInfoResultBean>>(context) {
             @Override
-            public void onNext(BaseResponseBean<CheckFaceInfoResultBean> checkFaceInfoResultBeanBaseResponseBean) {
-                super.onNext(checkFaceInfoResultBeanBaseResponseBean);
-                faceIdentifyAccess.postValue(true);
+            public void onNext(BaseResponseBean<CheckFaceInfoResultBean> bean) {
+                super.onNext(bean);
+                if (bean.getData().isResult()) {
+                    LogUtils.i(TAG, "身份证人脸校验成功");
+                    faceIdentifyAccess.postValue(true);
+                } else {
+                    showToast(bean.getData().getMessage());
+                    faceIdentifyAccess.postValue(false);
+                }
             }
 
             @Override
             public void onError(Throwable e) {
                 super.onError(e);
                 showToast(error);
+                faceIdentifyAccess.postValue(false);
+                LogUtils.i(TAG, "身份证人脸校验失败," + error);
             }
         });
     }
+
 
     /**
      * OCR授权
@@ -167,7 +231,7 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
             @Override
             public void onError(OCRError error) {
                 error.printStackTrace();
-                showToast("ocr 授权失败"+error.getErrorCode());
+                showToast("ocr 授权失败" + error.getErrorCode());
 
             }
         }, getApplication());
@@ -181,7 +245,7 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
     public void startOSRSpeech(MyRecognizer recognizer) {
         // DEMO集成步骤2.1 拼接识别参数： 此处params可以打印出来，直接写到你的代码里去，最终的json一致即可。
         final Map<String, Object> params = new HashMap<>();
-        params.put(SpeechConstant.ACCEPT_AUDIO_VOLUME,false);
+        params.put(SpeechConstant.ACCEPT_AUDIO_VOLUME, false);
         LogUtils.i(TAG, "设置的start输入参数：" + params);
         // 复制此段可以自动检测常规错误
         (new AutoCheck(getApplication(), new Handler() {
@@ -191,7 +255,7 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
                     synchronized (autoCheck) {
                         String message = autoCheck.obtainErrorMessage(); // autoCheck.obtainAllMessage();
                         ; // 可以用下面一行替代，在logcat中查看代码
-                         LogUtils.i("AutoCheckMessage", message);
+                        LogUtils.i("AutoCheckMessage", message);
                     }
                 }
             }
@@ -210,7 +274,7 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
         for (int i = 0; i < progressContents.length; i++) {
             FaceSignProgressBean bean = new FaceSignProgressBean();
             bean.setId(i);
-            if (i==0){
+            if (i == 0) {
                 bean.setSelect(true);
             }
             bean.setContent(progressContents[i]);
@@ -242,10 +306,10 @@ public class OnlineFaceSignViewModel extends BaseViewModel {
         } catch (IOException e) {
             e.printStackTrace();
         }
-       LogUtils.i("aaaa,头像保存成功");
+        LogUtils.i("aaaa,头像保存成功");
     }
 
-    public void saveIdCard(Bitmap bitmap){
+    public void saveIdCard(Bitmap bitmap) {
         try {
             FileOutputStream fileOutputStream = new FileOutputStream(Constant.ID_CARD_PATH);
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);

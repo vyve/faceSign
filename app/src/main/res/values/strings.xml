@@ -7,11 +7,15 @@
     <string name="main_personal">个人设置</string>
     
     
-    <string name="face_sign_voice_text1">请您正对摄像头，手持身份证，并把身份证正面放置于规定区域内。</string>
-    <string name="face_sign_voice_text2">天安人寿守护至尊保重疾险产品</string>
-    <string name="face_sign_voice_text3">1.您是自愿参加？</string>
-    <string name="face_sign_voice_text4">电子文档展示</string>
-    <string name="face_sign_voice_text5">该签名是否是您本人签名？</string>
+    <string name="face_sign_voice_text1">请您出示您的身份证，并将人脸及身份证正面展示在对应的框中。</string>
+<!--    <string name="face_sign_voice_text2">您好，您购买的人保助贷险</string>-->
+    <string name="face_sign_voice_text2">您好，您购买的人保助贷险，是适合21岁至56岁的中国大陆居民、身体健康并具有完全民事行为能力的自然人，保障期限一年。
+        在保险期限内，当超过贷款合同约定的应付款日或被保险人宣布的贷款提前到期日，投保人仍未履行或完全履行在规定期间内的还款（或付息）义务，且超过保险单载明的期限的，视为保险事故发生。
+        保险人对保险事故发生时投保人在所投保的项下未偿还的全部贷款本金和相应的利息（含符合法律法规规定的罚息、复利）按照本保险合同的约定承担赔偿责任。</string>
+    <string name="face_sign_voice_text3">请问您是否清晰？请回答“是”或“否”</string>
+    <string name="face_sign_voice_text4">下面将为您展示《助贷险保险责任》、《保险合同》，请您阅读并由本人签字确认。</string>
+    <string name="face_sign_voice_text5">请您再次确认是否为您本人签名，请回答“是”或“否”。</string>
+    <string name="face_sign_voice_text10">感谢您的配合，本次面签结束，保险合同生效后会有专员与您联系。再见。</string>
 
 
     <string name="detect_no_face">未检测到人脸</string>

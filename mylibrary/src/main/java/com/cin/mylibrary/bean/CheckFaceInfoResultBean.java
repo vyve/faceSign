@@ -9,4 +9,6 @@ import lombok.Data;
 public class CheckFaceInfoResultBean {
     private boolean result;
     private String score;
+    private int code;
+    private String message;
 }

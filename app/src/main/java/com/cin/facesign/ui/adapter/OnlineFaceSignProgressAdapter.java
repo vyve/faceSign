@@ -55,6 +55,13 @@ public class OnlineFaceSignProgressAdapter extends BaseQuickAdapter<FaceSignProg
         }
     }
 
+    /**
+     * 获取当前进度的标题内容
+     */
+    public String getProgressTitle(int progress){
+        return getItem(progress).getContent();
+    }
+
     @Override
     protected void convert(@NonNull BaseViewHolder baseViewHolder, FaceSignProgressBean faceSignProgressBean) {
         AdapterOnlinFaceSignProgressBinding binding = baseViewHolder.getBinding();

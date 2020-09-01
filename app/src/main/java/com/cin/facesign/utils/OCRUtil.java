@@ -7,7 +7,6 @@ import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.YuvImage;
-import android.util.Log;
 
 import com.baidu.aip.ImageFrame;
 import com.baidu.aip.face.PreviewView;
@@ -16,6 +15,7 @@ import com.baidu.ocr.ui.camera.MaskView;
 import com.baidu.ocr.ui.camera.OCRMaskView;
 import com.baidu.ocr.ui.util.ImageUtil;
 import com.blankj.utilcode.util.LogUtils;
+import com.blankj.utilcode.util.ScreenUtils;
 import com.blankj.utilcode.util.SizeUtils;
 
 import java.io.ByteArrayOutputStream;
@@ -68,9 +68,9 @@ public class OCRUtil {
 //        int right = width * frameRect.right / maskView.getWidth();
 //        int bottom = height * (frameRect.bottom )/ maskView.getHeight();
         int left = (int) maskView.getIdCardIdentifyRect().left;
-        int top = (int) maskView.getIdCardIdentifyRect().top;
+        int top = (int) maskView.getIdCardIdentifyRect().top+ SizeUtils.dp2px(45);
         int right = (int) maskView.getIdCardIdentifyRect().right;
-        int bottom = (int) maskView.getIdCardIdentifyRect().bottom;
+        int bottom = (int) maskView.getIdCardIdentifyRect().bottom+SizeUtils.dp2px(45);
 
         Rect previewFrame = previewView.getPreviewFrame();
         // 高度大于图片
@@ -121,9 +121,9 @@ public class OCRUtil {
 //            region.right = x + rotatedWidth / 2;
 //            region.bottom = y + rotated / 2;
             region.left = x - rotatedWidth / 2-150;
-            region.top = y - rotated / 2-0;
+            region.top = y - rotated / 2;
             region.right = x + rotatedWidth / 2-150;
-            region.bottom = y + rotated / 2-0;
+            region.bottom = y + rotated / 2;
             region.sort();
         }
 

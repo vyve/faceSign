@@ -13,7 +13,6 @@ import com.cin.facesign.R;
 import com.cin.facesign.databinding.ActivityFaceSignFinishBinding;
 import com.cin.facesign.viewmodel.FaceSignFinishViewModel;
 import com.cin.mylibrary.base.BaseActivity;
-import com.cin.mylibrary.base.BaseModel;
 
 
 /**
@@ -51,7 +50,7 @@ public class FaceSignFinishActivity extends BaseActivity<ActivityFaceSignFinishB
             }
         });
 
-        viewModel.uploadData(this, insuranceId);
+        viewModel.uploadFirstVideo(this, insuranceId);
     }
 
     @Override

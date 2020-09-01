@@ -1,5 +1,6 @@
 package com.cin.facesign.ui.fragment;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -8,6 +9,7 @@ import com.blankj.utilcode.util.SPUtils;
 import com.chad.library.BR;
 import com.cin.facesign.Constant;
 import com.cin.facesign.R;
+import com.cin.facesign.TestActivity;
 import com.cin.facesign.databinding.FragmentPersonalBinding;
 import com.cin.facesign.ui.ElectronicDocumentActivity;
 import com.cin.facesign.ui.FaceSignFinishActivity;
@@ -54,6 +56,7 @@ public class PersonalFragment extends BaseFragment<FragmentPersonalBinding, Pers
          */
         public void onChangePhoneClick() {
             showToast("手机号码变更");
+            startActivity(new Intent(mActivity,TestActivity.class));
         }
 
         /**

@@ -126,13 +126,13 @@ public class Camera1Control implements ICameraControl {
     private SurfaceTexture surfaceTexture;
 
     private void startCamera() {
-        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (permissionCallback != null) {
-                permissionCallback.onRequestPermission();
-            }
-            return;
-        }
+//        if (ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA)
+//                != PackageManager.PERMISSION_GRANTED) {
+//            if (permissionCallback != null) {
+//                permissionCallback.onRequestPermission();
+//            }
+//            return;
+//        }
 
         if (camera == null) {
             Camera.CameraInfo cameraInfo = new Camera.CameraInfo();
@@ -204,14 +204,14 @@ public class Camera1Control implements ICameraControl {
                 }
             });
             //人脸识别
-            if (previewView.getIdentifyType() == 1) {
-                CameraThreadPool.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        onRequestDetect(data);
-                    }
-                });
-            }
+//            if (previewView.getIdentifyType() == 1) {
+//                CameraThreadPool.execute(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        onRequestDetect(data);
+//                    }
+//                });
+//            }
 
         }
     };

@@ -22,9 +22,22 @@ public class Constant {
     public static final String ID_CARD_PATH = FILE_SAVE_PATH + "face_id_card.jpg";
 
     /**
+     * 视频录制保存的路径1
+     */
+    public static final String VIDEO_RECORD_PATH1 = FILE_SAVE_PATH + "videoRecord1.mp4";
+    /**
+     * 视频录制保存的路径2
+     */
+    public static final String VIDEO_RECORD_PATH2 = FILE_SAVE_PATH + "videoRecord2.mp4";
+    /**
      * 屏幕录制保存的路径
      */
-    public static final String VIDEO_RECORD_PATH = FILE_SAVE_PATH + "screenRecord.mp4";
+    public static final String SCREEN_RECORD_PATH = FILE_SAVE_PATH + "screenRecord.mp4";
+
+    /**
+     * 屏幕录制帧保存路径
+     */
+    public static final String VIDEO_RECORD_FRAME = FILE_SAVE_PATH + "screenRecord_frame.jpg";
 
     /**
      * 签名文件保存路径

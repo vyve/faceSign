@@ -153,6 +153,11 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
     private boolean alreadyAddOCRProcessor = false;
     /**
      * 当前的进度
+     * 0 身份验证
+     * 1 产品及条款介绍
+     * 2 信息咨询
+     * 3 电子文档展示
+     * 4 客户签名
      */
     private int currentProgress = 0;
     /**
@@ -324,7 +329,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             });
             dialog.setOnButton2ClickListener(v -> showToast("线下面签"));
         });
-
+        //人脸-身份证验证结果
         viewModel.faceIdentifyAccess.observe(this, aBoolean -> {
             if (aBoolean) {
                 //识别成功弹窗
@@ -335,6 +340,7 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
                 mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
             } else {
                 //识别失败，重新进行识别
+                showToast("人脸认证失败");
                 alreadyAddOCRProcessor = false;
                 faceDetectManager.removePreProcessor(ocrCropProcessor);
                 faceDetectManager.addPreProcessor(faceCropProcessor);
@@ -403,7 +409,9 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             if (currentProgress != 0) {
                 if (currentProgress == 4) {
                     mHandler.sendEmptyMessageDelayed(SHOW_ASR_SPEECH_DIALOG, 500);
-                } else {
+                } else if (currentProgress==2){
+                    mHandler.sendEmptyMessageDelayed(SHOW_ASR_SPEECH_DIALOG, 500);
+                } else{
                     currentProgress++;
                     mHandler.sendEmptyMessageDelayed(START_SPEAK_TEXT, 2000);
                 }
@@ -441,6 +449,14 @@ public class OnlineFaceSignActivity extends BaseActivity<ActivityOnlineFaceSignB
             LogUtils.i(result);
             if (result == null) {
                 return;
+            }
+            //信息咨询
+            if (currentProgress==2){
+                if (result.startsWith("自愿")){
+
+                }else {
+                    showToast("不自愿");
+                }
             }
             if (result.startsWith("确认")) {
                 ToastUtils.setGravity(Gravity.CENTER, 0, 0);

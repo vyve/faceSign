@@ -1,5 +1,7 @@
 package com.cin.mylibrary.request_bean;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -10,4 +12,9 @@ import lombok.Data;
 public class CompleteOnlineIdentifyRequestBean {
     private String data;
     private String video;
+    /**
+     * 签名文件路径
+     */
+    private String signFile;
+    private List<String> videos;
 }

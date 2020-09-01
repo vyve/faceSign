@@ -26,11 +26,11 @@ public class MyApp extends Application {
     public void onCreate() {
         super.onCreate();
         instance = this;
-        initFaceSDK();
+//        initFaceSDK();
         Utils.init(this);
         ImageLoader.getInstance().setImageLoader(new GlideLoader());
 
-        getFaceSDKToken();
+//        getFaceSDKToken();
         CrashReport.initCrashReport(getApplicationContext(), "efd17bb886", false);
     }
 

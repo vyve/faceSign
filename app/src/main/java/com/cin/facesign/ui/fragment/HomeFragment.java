@@ -10,6 +10,7 @@ import com.blankj.utilcode.util.SizeUtils;
 import com.chad.library.BR;
 import com.cin.facesign.R;
 import com.cin.facesign.databinding.FragmentHomeBindingImpl;
+import com.cin.facesign.ui.OnlineFaceSign2Activity;
 import com.cin.facesign.ui.OnlineFaceSignActivity;
 import com.cin.facesign.ui.InsurancePolicyDetailActivity;
 import com.cin.facesign.ui.adapter.HomeBannerAdapter;
@@ -64,7 +65,7 @@ public class HomeFragment extends BaseFragment<FragmentHomeBindingImpl, HomeView
             //远程面签
             if (view.getId()==R.id.faceSign){
                 if (todoAdapter.getItem(position)!=null) {
-                    OnlineFaceSignActivity.startActivity(mActivity, 1);
+                    OnlineFaceSign2Activity.startActivity(mActivity, 1);
                 }
             }
         });
